@@ -1,0 +1,9 @@
+/home/soya/catkin_ws/src/darknetb/build-release/CMakeFiles/install.dir
+/home/soya/catkin_ws/src/darknetb/build-release/CMakeFiles/list_install_components.dir
+/home/soya/catkin_ws/src/darknetb/build-release/CMakeFiles/rebuild_cache.dir
+/home/soya/catkin_ws/src/darknetb/build-release/CMakeFiles/dark.dir
+/home/soya/catkin_ws/src/darknetb/build-release/CMakeFiles/uselib.dir
+/home/soya/catkin_ws/src/darknetb/build-release/CMakeFiles/install/strip.dir
+/home/soya/catkin_ws/src/darknetb/build-release/CMakeFiles/install/local.dir
+/home/soya/catkin_ws/src/darknetb/build-release/CMakeFiles/darknet.dir
+/home/soya/catkin_ws/src/darknetb/build-release/CMakeFiles/edit_cache.dir

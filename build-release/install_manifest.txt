@@ -1,0 +1,9 @@
+/home/soya/catkin_ws/src/darknetb/libdarknet.so
+/home/soya/catkin_ws/src/darknetb/include/darknet/darknet.h
+/home/soya/catkin_ws/src/darknetb/include/darknet/yolo_v2_class.hpp
+/home/soya/catkin_ws/src/darknetb/uselib
+/home/soya/catkin_ws/src/darknetb/darknet
+/home/soya/catkin_ws/src/darknetb/share/darknet/DarknetTargets.cmake
+/home/soya/catkin_ws/src/darknetb/share/darknet/DarknetTargets-release.cmake
+/home/soya/catkin_ws/src/darknetb/share/darknet/DarknetConfig.cmake
+/home/soya/catkin_ws/src/darknetb/share/darknet/DarknetConfigVersion.cmake

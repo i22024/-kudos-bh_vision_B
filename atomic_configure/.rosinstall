@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/soya/catkin_ws/src/darknetb/devel/setup.sh

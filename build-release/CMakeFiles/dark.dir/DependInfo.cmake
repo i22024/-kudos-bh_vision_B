@@ -1,0 +1,98 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
+# The set of languages for which implicit dependencies are needed:
+set(CMAKE_DEPENDS_LANGUAGES
+  )
+
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/soya/catkin_ws/src/darknetb/src/activation_layer.c" "CMakeFiles/dark.dir/src/activation_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/activation_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/activations.c" "CMakeFiles/dark.dir/src/activations.c.o" "gcc" "CMakeFiles/dark.dir/src/activations.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/art.c" "CMakeFiles/dark.dir/src/art.c.o" "gcc" "CMakeFiles/dark.dir/src/art.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/avgpool_layer.c" "CMakeFiles/dark.dir/src/avgpool_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/avgpool_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/batchnorm_layer.c" "CMakeFiles/dark.dir/src/batchnorm_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/batchnorm_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/blas.c" "CMakeFiles/dark.dir/src/blas.c.o" "gcc" "CMakeFiles/dark.dir/src/blas.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/box.c" "CMakeFiles/dark.dir/src/box.c.o" "gcc" "CMakeFiles/dark.dir/src/box.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/captcha.c" "CMakeFiles/dark.dir/src/captcha.c.o" "gcc" "CMakeFiles/dark.dir/src/captcha.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/cifar.c" "CMakeFiles/dark.dir/src/cifar.c.o" "gcc" "CMakeFiles/dark.dir/src/cifar.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/classifier.c" "CMakeFiles/dark.dir/src/classifier.c.o" "gcc" "CMakeFiles/dark.dir/src/classifier.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/coco.c" "CMakeFiles/dark.dir/src/coco.c.o" "gcc" "CMakeFiles/dark.dir/src/coco.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/col2im.c" "CMakeFiles/dark.dir/src/col2im.c.o" "gcc" "CMakeFiles/dark.dir/src/col2im.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/compare.c" "CMakeFiles/dark.dir/src/compare.c.o" "gcc" "CMakeFiles/dark.dir/src/compare.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/connected_layer.c" "CMakeFiles/dark.dir/src/connected_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/connected_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/conv_lstm_layer.c" "CMakeFiles/dark.dir/src/conv_lstm_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/conv_lstm_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/convolutional_layer.c" "CMakeFiles/dark.dir/src/convolutional_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/convolutional_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/cost_layer.c" "CMakeFiles/dark.dir/src/cost_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/cost_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/cpu_gemm.c" "CMakeFiles/dark.dir/src/cpu_gemm.c.o" "gcc" "CMakeFiles/dark.dir/src/cpu_gemm.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/crnn_layer.c" "CMakeFiles/dark.dir/src/crnn_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/crnn_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/crop_layer.c" "CMakeFiles/dark.dir/src/crop_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/crop_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/dark_cuda.c" "CMakeFiles/dark.dir/src/dark_cuda.c.o" "gcc" "CMakeFiles/dark.dir/src/dark_cuda.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/data.c" "CMakeFiles/dark.dir/src/data.c.o" "gcc" "CMakeFiles/dark.dir/src/data.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/deconvolutional_layer.c" "CMakeFiles/dark.dir/src/deconvolutional_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/deconvolutional_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/demo.c" "CMakeFiles/dark.dir/src/demo.c.o" "gcc" "CMakeFiles/dark.dir/src/demo.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/detection_layer.c" "CMakeFiles/dark.dir/src/detection_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/detection_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/detector.c" "CMakeFiles/dark.dir/src/detector.c.o" "gcc" "CMakeFiles/dark.dir/src/detector.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/dice.c" "CMakeFiles/dark.dir/src/dice.c.o" "gcc" "CMakeFiles/dark.dir/src/dice.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/dropout_layer.c" "CMakeFiles/dark.dir/src/dropout_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/dropout_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/gaussian_yolo_layer.c" "CMakeFiles/dark.dir/src/gaussian_yolo_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/gaussian_yolo_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/gemm.c" "CMakeFiles/dark.dir/src/gemm.c.o" "gcc" "CMakeFiles/dark.dir/src/gemm.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/go.c" "CMakeFiles/dark.dir/src/go.c.o" "gcc" "CMakeFiles/dark.dir/src/go.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/gru_layer.c" "CMakeFiles/dark.dir/src/gru_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/gru_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/im2col.c" "CMakeFiles/dark.dir/src/im2col.c.o" "gcc" "CMakeFiles/dark.dir/src/im2col.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/image.c" "CMakeFiles/dark.dir/src/image.c.o" "gcc" "CMakeFiles/dark.dir/src/image.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/layer.c" "CMakeFiles/dark.dir/src/layer.c.o" "gcc" "CMakeFiles/dark.dir/src/layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/list.c" "CMakeFiles/dark.dir/src/list.c.o" "gcc" "CMakeFiles/dark.dir/src/list.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/local_layer.c" "CMakeFiles/dark.dir/src/local_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/local_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/lstm_layer.c" "CMakeFiles/dark.dir/src/lstm_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/lstm_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/matrix.c" "CMakeFiles/dark.dir/src/matrix.c.o" "gcc" "CMakeFiles/dark.dir/src/matrix.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/maxpool_layer.c" "CMakeFiles/dark.dir/src/maxpool_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/maxpool_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/network.c" "CMakeFiles/dark.dir/src/network.c.o" "gcc" "CMakeFiles/dark.dir/src/network.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/nightmare.c" "CMakeFiles/dark.dir/src/nightmare.c.o" "gcc" "CMakeFiles/dark.dir/src/nightmare.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/normalization_layer.c" "CMakeFiles/dark.dir/src/normalization_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/normalization_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/option_list.c" "CMakeFiles/dark.dir/src/option_list.c.o" "gcc" "CMakeFiles/dark.dir/src/option_list.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/parser.c" "CMakeFiles/dark.dir/src/parser.c.o" "gcc" "CMakeFiles/dark.dir/src/parser.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/region_layer.c" "CMakeFiles/dark.dir/src/region_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/region_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/reorg_layer.c" "CMakeFiles/dark.dir/src/reorg_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/reorg_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/reorg_old_layer.c" "CMakeFiles/dark.dir/src/reorg_old_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/reorg_old_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/rnn.c" "CMakeFiles/dark.dir/src/rnn.c.o" "gcc" "CMakeFiles/dark.dir/src/rnn.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/rnn_layer.c" "CMakeFiles/dark.dir/src/rnn_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/rnn_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/rnn_vid.c" "CMakeFiles/dark.dir/src/rnn_vid.c.o" "gcc" "CMakeFiles/dark.dir/src/rnn_vid.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/route_layer.c" "CMakeFiles/dark.dir/src/route_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/route_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/sam_layer.c" "CMakeFiles/dark.dir/src/sam_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/sam_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/scale_channels_layer.c" "CMakeFiles/dark.dir/src/scale_channels_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/scale_channels_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/shortcut_layer.c" "CMakeFiles/dark.dir/src/shortcut_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/shortcut_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/softmax_layer.c" "CMakeFiles/dark.dir/src/softmax_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/softmax_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/super.c" "CMakeFiles/dark.dir/src/super.c.o" "gcc" "CMakeFiles/dark.dir/src/super.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/swag.c" "CMakeFiles/dark.dir/src/swag.c.o" "gcc" "CMakeFiles/dark.dir/src/swag.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/tag.c" "CMakeFiles/dark.dir/src/tag.c.o" "gcc" "CMakeFiles/dark.dir/src/tag.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/tree.c" "CMakeFiles/dark.dir/src/tree.c.o" "gcc" "CMakeFiles/dark.dir/src/tree.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/upsample_layer.c" "CMakeFiles/dark.dir/src/upsample_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/upsample_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/utils.c" "CMakeFiles/dark.dir/src/utils.c.o" "gcc" "CMakeFiles/dark.dir/src/utils.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/voxel.c" "CMakeFiles/dark.dir/src/voxel.c.o" "gcc" "CMakeFiles/dark.dir/src/voxel.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/writing.c" "CMakeFiles/dark.dir/src/writing.c.o" "gcc" "CMakeFiles/dark.dir/src/writing.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/yolo.c" "CMakeFiles/dark.dir/src/yolo.c.o" "gcc" "CMakeFiles/dark.dir/src/yolo.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/yolo_layer.c" "CMakeFiles/dark.dir/src/yolo_layer.c.o" "gcc" "CMakeFiles/dark.dir/src/yolo_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/activation_kernels.cu" "CMakeFiles/dark.dir/src/activation_kernels.cu.o" "gcc" "CMakeFiles/dark.dir/src/activation_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/avgpool_layer_kernels.cu" "CMakeFiles/dark.dir/src/avgpool_layer_kernels.cu.o" "gcc" "CMakeFiles/dark.dir/src/avgpool_layer_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/blas_kernels.cu" "CMakeFiles/dark.dir/src/blas_kernels.cu.o" "gcc" "CMakeFiles/dark.dir/src/blas_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/col2im_kernels.cu" "CMakeFiles/dark.dir/src/col2im_kernels.cu.o" "gcc" "CMakeFiles/dark.dir/src/col2im_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/convolutional_kernels.cu" "CMakeFiles/dark.dir/src/convolutional_kernels.cu.o" "gcc" "CMakeFiles/dark.dir/src/convolutional_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/crop_layer_kernels.cu" "CMakeFiles/dark.dir/src/crop_layer_kernels.cu.o" "gcc" "CMakeFiles/dark.dir/src/crop_layer_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/deconvolutional_kernels.cu" "CMakeFiles/dark.dir/src/deconvolutional_kernels.cu.o" "gcc" "CMakeFiles/dark.dir/src/deconvolutional_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/dropout_layer_kernels.cu" "CMakeFiles/dark.dir/src/dropout_layer_kernels.cu.o" "gcc" "CMakeFiles/dark.dir/src/dropout_layer_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/im2col_kernels.cu" "CMakeFiles/dark.dir/src/im2col_kernels.cu.o" "gcc" "CMakeFiles/dark.dir/src/im2col_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/maxpool_layer_kernels.cu" "CMakeFiles/dark.dir/src/maxpool_layer_kernels.cu.o" "gcc" "CMakeFiles/dark.dir/src/maxpool_layer_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/network_kernels.cu" "CMakeFiles/dark.dir/src/network_kernels.cu.o" "gcc" "CMakeFiles/dark.dir/src/network_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/http_stream.cpp" "CMakeFiles/dark.dir/src/http_stream.cpp.o" "gcc" "CMakeFiles/dark.dir/src/http_stream.cpp.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/image_opencv.cpp" "CMakeFiles/dark.dir/src/image_opencv.cpp.o" "gcc" "CMakeFiles/dark.dir/src/image_opencv.cpp.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/yolo_v2_class.cpp" "CMakeFiles/dark.dir/src/yolo_v2_class.cpp.o" "gcc" "CMakeFiles/dark.dir/src/yolo_v2_class.cpp.o.d"
+  )
+
+# Targets to which this target links.
+set(CMAKE_TARGET_LINKED_INFO_FILES
+  )
+
+# Fortran module output directory.
+set(CMAKE_Fortran_TARGET_MODULE_DIR "")

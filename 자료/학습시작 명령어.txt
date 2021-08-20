@@ -1,0 +1,8 @@
+./darknet detector train kudos_obj.data yolov4-tiny_kudos.cfg yolov4-tiny.conv.29
+
+darknet.exe detector train  kudos_obj.data yolov4-tiny_kudos.cfg yolov4-tiny.conv.29
+
+
+./darknet detector train kudos_obj.data yolov4-tiny_kudos.cfg backup\yolo-obj_7000.weights
+
+

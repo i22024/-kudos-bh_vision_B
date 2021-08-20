@@ -1,0 +1,98 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
+# The set of languages for which implicit dependencies are needed:
+set(CMAKE_DEPENDS_LANGUAGES
+  )
+
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/soya/catkin_ws/src/darknetb/src/activation_layer.c" "CMakeFiles/darknet.dir/src/activation_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/activation_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/activations.c" "CMakeFiles/darknet.dir/src/activations.c.o" "gcc" "CMakeFiles/darknet.dir/src/activations.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/art.c" "CMakeFiles/darknet.dir/src/art.c.o" "gcc" "CMakeFiles/darknet.dir/src/art.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/avgpool_layer.c" "CMakeFiles/darknet.dir/src/avgpool_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/avgpool_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/batchnorm_layer.c" "CMakeFiles/darknet.dir/src/batchnorm_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/batchnorm_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/blas.c" "CMakeFiles/darknet.dir/src/blas.c.o" "gcc" "CMakeFiles/darknet.dir/src/blas.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/box.c" "CMakeFiles/darknet.dir/src/box.c.o" "gcc" "CMakeFiles/darknet.dir/src/box.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/captcha.c" "CMakeFiles/darknet.dir/src/captcha.c.o" "gcc" "CMakeFiles/darknet.dir/src/captcha.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/cifar.c" "CMakeFiles/darknet.dir/src/cifar.c.o" "gcc" "CMakeFiles/darknet.dir/src/cifar.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/classifier.c" "CMakeFiles/darknet.dir/src/classifier.c.o" "gcc" "CMakeFiles/darknet.dir/src/classifier.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/coco.c" "CMakeFiles/darknet.dir/src/coco.c.o" "gcc" "CMakeFiles/darknet.dir/src/coco.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/col2im.c" "CMakeFiles/darknet.dir/src/col2im.c.o" "gcc" "CMakeFiles/darknet.dir/src/col2im.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/compare.c" "CMakeFiles/darknet.dir/src/compare.c.o" "gcc" "CMakeFiles/darknet.dir/src/compare.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/connected_layer.c" "CMakeFiles/darknet.dir/src/connected_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/connected_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/conv_lstm_layer.c" "CMakeFiles/darknet.dir/src/conv_lstm_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/conv_lstm_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/convolutional_layer.c" "CMakeFiles/darknet.dir/src/convolutional_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/convolutional_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/cost_layer.c" "CMakeFiles/darknet.dir/src/cost_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/cost_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/cpu_gemm.c" "CMakeFiles/darknet.dir/src/cpu_gemm.c.o" "gcc" "CMakeFiles/darknet.dir/src/cpu_gemm.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/crnn_layer.c" "CMakeFiles/darknet.dir/src/crnn_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/crnn_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/crop_layer.c" "CMakeFiles/darknet.dir/src/crop_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/crop_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/dark_cuda.c" "CMakeFiles/darknet.dir/src/dark_cuda.c.o" "gcc" "CMakeFiles/darknet.dir/src/dark_cuda.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/darknet.c" "CMakeFiles/darknet.dir/src/darknet.c.o" "gcc" "CMakeFiles/darknet.dir/src/darknet.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/data.c" "CMakeFiles/darknet.dir/src/data.c.o" "gcc" "CMakeFiles/darknet.dir/src/data.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/deconvolutional_layer.c" "CMakeFiles/darknet.dir/src/deconvolutional_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/deconvolutional_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/demo.c" "CMakeFiles/darknet.dir/src/demo.c.o" "gcc" "CMakeFiles/darknet.dir/src/demo.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/detection_layer.c" "CMakeFiles/darknet.dir/src/detection_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/detection_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/detector.c" "CMakeFiles/darknet.dir/src/detector.c.o" "gcc" "CMakeFiles/darknet.dir/src/detector.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/dice.c" "CMakeFiles/darknet.dir/src/dice.c.o" "gcc" "CMakeFiles/darknet.dir/src/dice.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/dropout_layer.c" "CMakeFiles/darknet.dir/src/dropout_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/dropout_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/gaussian_yolo_layer.c" "CMakeFiles/darknet.dir/src/gaussian_yolo_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/gaussian_yolo_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/gemm.c" "CMakeFiles/darknet.dir/src/gemm.c.o" "gcc" "CMakeFiles/darknet.dir/src/gemm.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/go.c" "CMakeFiles/darknet.dir/src/go.c.o" "gcc" "CMakeFiles/darknet.dir/src/go.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/gru_layer.c" "CMakeFiles/darknet.dir/src/gru_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/gru_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/im2col.c" "CMakeFiles/darknet.dir/src/im2col.c.o" "gcc" "CMakeFiles/darknet.dir/src/im2col.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/image.c" "CMakeFiles/darknet.dir/src/image.c.o" "gcc" "CMakeFiles/darknet.dir/src/image.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/layer.c" "CMakeFiles/darknet.dir/src/layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/list.c" "CMakeFiles/darknet.dir/src/list.c.o" "gcc" "CMakeFiles/darknet.dir/src/list.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/local_layer.c" "CMakeFiles/darknet.dir/src/local_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/local_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/lstm_layer.c" "CMakeFiles/darknet.dir/src/lstm_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/lstm_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/matrix.c" "CMakeFiles/darknet.dir/src/matrix.c.o" "gcc" "CMakeFiles/darknet.dir/src/matrix.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/maxpool_layer.c" "CMakeFiles/darknet.dir/src/maxpool_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/maxpool_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/network.c" "CMakeFiles/darknet.dir/src/network.c.o" "gcc" "CMakeFiles/darknet.dir/src/network.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/nightmare.c" "CMakeFiles/darknet.dir/src/nightmare.c.o" "gcc" "CMakeFiles/darknet.dir/src/nightmare.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/normalization_layer.c" "CMakeFiles/darknet.dir/src/normalization_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/normalization_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/option_list.c" "CMakeFiles/darknet.dir/src/option_list.c.o" "gcc" "CMakeFiles/darknet.dir/src/option_list.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/parser.c" "CMakeFiles/darknet.dir/src/parser.c.o" "gcc" "CMakeFiles/darknet.dir/src/parser.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/region_layer.c" "CMakeFiles/darknet.dir/src/region_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/region_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/reorg_layer.c" "CMakeFiles/darknet.dir/src/reorg_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/reorg_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/reorg_old_layer.c" "CMakeFiles/darknet.dir/src/reorg_old_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/reorg_old_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/rnn.c" "CMakeFiles/darknet.dir/src/rnn.c.o" "gcc" "CMakeFiles/darknet.dir/src/rnn.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/rnn_layer.c" "CMakeFiles/darknet.dir/src/rnn_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/rnn_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/rnn_vid.c" "CMakeFiles/darknet.dir/src/rnn_vid.c.o" "gcc" "CMakeFiles/darknet.dir/src/rnn_vid.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/route_layer.c" "CMakeFiles/darknet.dir/src/route_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/route_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/sam_layer.c" "CMakeFiles/darknet.dir/src/sam_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/sam_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/scale_channels_layer.c" "CMakeFiles/darknet.dir/src/scale_channels_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/scale_channels_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/shortcut_layer.c" "CMakeFiles/darknet.dir/src/shortcut_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/shortcut_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/softmax_layer.c" "CMakeFiles/darknet.dir/src/softmax_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/softmax_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/super.c" "CMakeFiles/darknet.dir/src/super.c.o" "gcc" "CMakeFiles/darknet.dir/src/super.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/swag.c" "CMakeFiles/darknet.dir/src/swag.c.o" "gcc" "CMakeFiles/darknet.dir/src/swag.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/tag.c" "CMakeFiles/darknet.dir/src/tag.c.o" "gcc" "CMakeFiles/darknet.dir/src/tag.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/tree.c" "CMakeFiles/darknet.dir/src/tree.c.o" "gcc" "CMakeFiles/darknet.dir/src/tree.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/upsample_layer.c" "CMakeFiles/darknet.dir/src/upsample_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/upsample_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/utils.c" "CMakeFiles/darknet.dir/src/utils.c.o" "gcc" "CMakeFiles/darknet.dir/src/utils.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/voxel.c" "CMakeFiles/darknet.dir/src/voxel.c.o" "gcc" "CMakeFiles/darknet.dir/src/voxel.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/writing.c" "CMakeFiles/darknet.dir/src/writing.c.o" "gcc" "CMakeFiles/darknet.dir/src/writing.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/yolo.c" "CMakeFiles/darknet.dir/src/yolo.c.o" "gcc" "CMakeFiles/darknet.dir/src/yolo.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/yolo_layer.c" "CMakeFiles/darknet.dir/src/yolo_layer.c.o" "gcc" "CMakeFiles/darknet.dir/src/yolo_layer.c.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/activation_kernels.cu" "CMakeFiles/darknet.dir/src/activation_kernels.cu.o" "gcc" "CMakeFiles/darknet.dir/src/activation_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/avgpool_layer_kernels.cu" "CMakeFiles/darknet.dir/src/avgpool_layer_kernels.cu.o" "gcc" "CMakeFiles/darknet.dir/src/avgpool_layer_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/blas_kernels.cu" "CMakeFiles/darknet.dir/src/blas_kernels.cu.o" "gcc" "CMakeFiles/darknet.dir/src/blas_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/col2im_kernels.cu" "CMakeFiles/darknet.dir/src/col2im_kernels.cu.o" "gcc" "CMakeFiles/darknet.dir/src/col2im_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/convolutional_kernels.cu" "CMakeFiles/darknet.dir/src/convolutional_kernels.cu.o" "gcc" "CMakeFiles/darknet.dir/src/convolutional_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/crop_layer_kernels.cu" "CMakeFiles/darknet.dir/src/crop_layer_kernels.cu.o" "gcc" "CMakeFiles/darknet.dir/src/crop_layer_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/deconvolutional_kernels.cu" "CMakeFiles/darknet.dir/src/deconvolutional_kernels.cu.o" "gcc" "CMakeFiles/darknet.dir/src/deconvolutional_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/dropout_layer_kernels.cu" "CMakeFiles/darknet.dir/src/dropout_layer_kernels.cu.o" "gcc" "CMakeFiles/darknet.dir/src/dropout_layer_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/im2col_kernels.cu" "CMakeFiles/darknet.dir/src/im2col_kernels.cu.o" "gcc" "CMakeFiles/darknet.dir/src/im2col_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/maxpool_layer_kernels.cu" "CMakeFiles/darknet.dir/src/maxpool_layer_kernels.cu.o" "gcc" "CMakeFiles/darknet.dir/src/maxpool_layer_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/network_kernels.cu" "CMakeFiles/darknet.dir/src/network_kernels.cu.o" "gcc" "CMakeFiles/darknet.dir/src/network_kernels.cu.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/http_stream.cpp" "CMakeFiles/darknet.dir/src/http_stream.cpp.o" "gcc" "CMakeFiles/darknet.dir/src/http_stream.cpp.o.d"
+  "/home/soya/catkin_ws/src/darknetb/src/image_opencv.cpp" "CMakeFiles/darknet.dir/src/image_opencv.cpp.o" "gcc" "CMakeFiles/darknet.dir/src/image_opencv.cpp.o.d"
+  )
+
+# Targets to which this target links.
+set(CMAKE_TARGET_LINKED_INFO_FILES
+  )
+
+# Fortran module output directory.
+set(CMAKE_Fortran_TARGET_MODULE_DIR "")
