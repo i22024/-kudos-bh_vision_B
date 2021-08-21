@@ -264,8 +264,8 @@ python darknet_images.py
 ```  
   
 ```
-sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
-sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.5 2
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.5 2
 sudo update-alternatives --config python3
 # python 3.7을 python3로 선택한다.
 ```
