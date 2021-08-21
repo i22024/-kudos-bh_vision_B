@@ -286,7 +286,7 @@ sudo apt-get install -y qt5-default
 
 ```
 pip install --upgrade pip setuptools wheel
-pip install PyQt5
+sudo apt-get install python3-pyqt5
 ```
 
 
