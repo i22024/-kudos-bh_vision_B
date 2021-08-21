@@ -276,6 +276,7 @@ sudo apt install ros-kinetic-desktop-full --fix-missing
 
 7.  qt5와 pyqt를 설치
 ```
+sudo apt-get purge --auto-remove libqt4-dev
 sudo apt-get update
 sudo apt-get install build-essential
 sudo apt-get install qtcreator
