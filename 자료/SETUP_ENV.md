@@ -205,6 +205,7 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PAT
 cd 
 wget https://cmake.org/files/v3.16/cmake-3.16.2.tar.gz
 tar -xvzf 해당파일.tar.gz
+압축을 해제한 cmake 폴더로 이동
 ./bootstrap --prefix=/usr/local
 make
 make install
