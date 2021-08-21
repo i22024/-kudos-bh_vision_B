@@ -223,7 +223,10 @@ LIBSO=1
 ```
 >make
 ```
-make
+mkdir build_release
+cd build_release
+cmake ..
+cmake --build . --target install --parallel 8
 ```
 >설치 완료 테스트
 ```
