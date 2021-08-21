@@ -188,87 +188,29 @@ cd ~/catkin_ws
 catkin_make
 ```
 
-5. miniconda 설치
->참고링크: https://kynk94.github.io/devlog/post/jetson-nano-conda  
-> - https://github.com/conda-forge/miniforge/releases에 접속하여 Miniforge3-Linux-aarch64.sh 또는 Miniforge3-x.x.x-Linux-aarch64.sh를 다운  
->다운 받은 bash 파일 실행(Miniforge3-Linux-aarch64.sh 자리에 다운 받은 파일 이름을 써야함!)
-```
-chmod +x Miniforge3-Linux-aarch64.sh
-./Miniforge3-Linux-aarch64.sh
-```
->터미널 껐다 키기
->가상환경을 만들어주기 위해 다음 명령어를 입력
-```
-conda create -n tensor27 python=2.7
-```
->다음 명령어로 가상환경에 접속
-```
-conda activate tensor27
-```
->ROS 패키지 설치
-```
-pip install -U rospkg
-```
-
-6. tensorflow 설치
->참고주소:https://kynk94.github.io/devlog/post/jetson-nano-conda  
->환경세팅  
->! h5py 설치중 에러가 날 경우 다음을 차근차근 입력  
->! pip install Cython  
->! pip install h5py  
-```
-conda activate tensor27
-
-sudo apt-get update
-
-sudo apt-get install libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
-
-pip install testresources setuptools
-
-pip install numpy future mock h5py keras-preprocessing keras-applications futures protobuf pybind11
-```
-> 텐서플로우 설치
-```
-pip install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v33 tensorflow-gpu
-```
-> 텐서플로우 설치 확인
-```
-python
-
-import tensorflow
-```
-
-7. YOLO V4 설치
+5. YOLO V4 설치
 >참고주소: https://wendys.tistory.com/143  
 >참고주소: https://eehoeskrap.tistory.com/355  
 >참고주소: https://github.com/AlexeyAB/darknet#yolo-v4-in-other-frameworks  
->가상환경 활성화
-```
-conda activate tensor27
-```
 >쿠다 path 불러오기
 ```
 sudo apt-get update
-
 export PATH=/usr/local/cuda-9.0/bin${PATH:+:${PATH}}
-
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
-
 export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
-
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ```
 >yolo project download
 ```
-이 레포지스토리에 있는 darknet64efa....zip을 다운받은 이후 압축을 catkin/src에 해지하고 darknet으로 
+이 레포지스토리에 있는 darknet64efa....zip을 다운받은 이후 압축을 catkin/src에 해지하고 darknetb로 폴더 이름을 변경한다
 
-cd darknet
+cd darknetb
 
 wget https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights
 
 wget https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v4_pre/yolov4-tiny.weights
 ```
->make file 하기
+>make file 수정하기
 ```
 sudo gedit Makefile
 ```
@@ -295,7 +237,43 @@ python darknet_images.py
 >최종적으로 catkin_make를 하여 빌드 테스트를 해봅니다.  
 >!catkin_make를 하다가 rospkg를 찾을 수 없다는 에러가 나오면 다음을 해봅니다.  
 >!터미널을 새로 열고 가상환경(tensor27)이 활성화 되지 않은 상태로  
->!pip install -U rospkg를 입력하고 다시 catkin_make를 
+>!pip3 install -U rospkg를 입력하고 다시 cm을 입력하여 해결해봅시다    
+  
+
+  
+6. ROS를 python3로 업데이트 해보자
+```
+1. sudo apt update  
+2. sudo apt install software-properties-common  
+3. sudo add-apt-repository ppa:deadsnakes/ppa  
+4. sudo apt update
+5. sudo apt install python3.7
+```  
+  
+```
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.5 2
+sudo update-alternatives --config python3
+# python 3.7을 python3로 선택한다.
+```
+
+```
+sudo apt install python3-pip python3-all-dev python3-rospkg
+sudo apt install ros-kinetic-desktop-full --fix-missing
+```
+
+7.  qt5와 pyqt를 설치
+```
+sudo apt-get update
+sudo apt-get install build-essential
+sudo apt-get install qtcreator
+sudo apt-get install -y qt5-default
+```
+
+```
+pip install PyQt5
+```
+
 
 8. 쉬운 코드 편집 작업을 위한 VScode 설치
 >참고 주소: https://opencourse.tistory.com/221  
