@@ -44,29 +44,7 @@ yolo기능과 선을 따는 기능이 합쳐져 있는 레포지스토리입니�
 - python에 사용되는 pyqt5는 SETUP_ENV가이드에 따라 다시 잘 설치해주도록 합니다.  
 - https://github.com/soyaCat/-kudos-localPackage 다음 페이지에서 mcl2패키지를 다운받아 주도록 합니다.  
 - cm을 해주면 되는데 여기서 qt임포트에서 에러가 날 수도 있습니다. 이때는 CMakeList.txt를 잘 수정해줍니다.  
-- catkin_ws/build/mcl2에 catkin_ws/src/mcl2에 있는 내용을 복붙해줍니다.  
-
-
-
-- catkin_ws/src/darknet 폴더를 darkneta로 이름을 바꾼다.
-- git clone으로 레포지스토리를 복사하거나 zip파일을 다운받는다.
-- darkneta폴더에 복사한 내용물을 넣어준다. 겹치는 파일은 덮어쓰기 처리를 해준다.
-- catkin_ws 폴더로 가서 catkin_make수행
-- 오류가 안 났다면 메인폴더/src/darkneta로 가서 아나콘다 가상환경 실행
-- python Kudos_test.py를 실행해본다.
-- rosrun darkneta topic_subscriber를 실행해본다.
-- python darknet_images.py를 입력해서 darknet 작동을 확인
-- 여기까지 동작하면 패치 성공입니다.
-- !파이썬이 커스텀 메세지를 임포트하지 못할 때:   
-    >참고문서: https://answers.ros.org/question/105711/rospy-custom-message-importerror-no-module-named-msg/  
-    >참고문서: https://answers.ros.org/question/271620/importerror-no-module-named-xxxxmsg/
-    >- catkin_make 작업 이후에 source devel/setup.bash를 해주었다.  
-    >- 만약 지속적으로 오류가 발생하는 경우 .bashrc에 source/catkin_ws/devel/setup.bash를 해준다.  
-  
-- 파이썬 2.7을 위한 pip 설치시에  
-- pip 업그레이드는 주의해야만 합니다 !!!!!!  
-- sudo -H pip2 install --upgrade pip==20.3.4  
-- 잘못하면 먹통남.. 먹통나면 오류가 뜨는 해당 폴더 완전 삭제 후, pip 완전삭제 후, pip 재설치  
+- catkin_ws/build/mcl2에 catkin_ws/src/mcl2에 있는 내용을 복붙해줍니다.   
     
     
    ---
