@@ -200,6 +200,15 @@ export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY
 export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ```
+>cmake update
+```
+cd 
+wget https://cmake.org/files/v3.16/cmake-3.16.2.tar.gz
+tar -xvzf 해당파일.tar.gz
+./bootstrap --prefix=/usr/local
+make
+make install
+```
 >yolo project download
 ```
 이 레포지스토리에 있는 darknet64efa....zip을 다운받은 이후 압축을 catkin/src에 해지하고 darknetb로 폴더 이름을 변경한다
@@ -231,7 +240,6 @@ cmake --build . --target install --parallel 8
 >설치 완료 테스트
 ```
 python darknet_images.py
-
 #이미지 경로입력이 나오면 다음을 입력
 #"./data/dog.jpg"
 ```
