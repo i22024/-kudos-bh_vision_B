@@ -277,8 +277,22 @@ python darknet_images.py
 3. sudo add-apt-repository ppa:deadsnakes/ppa  
 4. sudo apt update
 5. sudo apt install python3.7
-```  
-  
+```
+
+```
+cd
+mkdir python3
+cd python3
+sudo apt install python3-venv
+python3 -m venv vision(가상 공간 이름)
+source 가상 환경 경로/bin/activate
+#bashrc에도 source룰 추가해주면 항상 활성화 가능
+
+sudo apt-get install python3-pip
+#pip freeze로 설치 패키지를 확인할수 있다.
+
+```
+
 ```
 sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
 sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.5 2
