@@ -17,6 +17,8 @@ import cv2
 from multiprocessing import Process, Queue
 import multiprocessing as mp
 import numpy as np
+import os 
+os.environ['MPLCONFIGDIR'] = os.getcwd() + "/configs/"
 import matplotlib.pyplot as plt
 
 class App(QWidget):
