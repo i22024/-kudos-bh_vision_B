@@ -20,6 +20,12 @@ sudo apt-get update
 wget https://raw.githubusercontent.com/ROBOTIS-GIT/robotis_tools/master/install_ros_kinetic.sh && chmod 755 ./install_ros_kinetic.sh && bash ./install_ros_kinetic.sh
 ```
 
+설치도중 에러가 발생한다면 다음의 명령어로 키를 추가해준다.
+
+```
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 에러가 발생하는 키
+```
+
 ```
 sudo apt-get install -y chrony ntpdate
 
