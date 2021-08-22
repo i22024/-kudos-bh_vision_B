@@ -314,9 +314,9 @@ sudo apt-get install qttools5-dev-tools
 pip install --upgrade pip setuptools wheel
 ```
 
->망할 젝슨에 pyQT를 설치하려면 직접 빌드해야 한다
->우선 자료폴더의 PyQt5와 sip 압축파일을 다운받고 압축을 풀어준다
->python3.7로 설치해주면 되시겠다.
+>망할 젝슨에 pyQT를 설치하려면 직접 빌드해야 한다  
+>우선 자료폴더의 PyQt5와 sip 압축파일을 다운받고 압축을 풀어준다  
+>python3.7로 설치해주면 되시겠다.  
 ```
 sudo apt-get install qt5-default
 cd /home/nvidia/sip-4.19.14
