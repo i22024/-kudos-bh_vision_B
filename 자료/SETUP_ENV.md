@@ -290,6 +290,8 @@ sudo update-alternatives --config python3
 ```
 sudo apt install python3-pip python3-all-dev python3-rospkg
 sudo apt install ros-kinetic-desktop-full --fix-missing
+pip3 install PyYAML
+pip3 install rospkg
 ```
 
 7.  qt5와 pyqt를 설치
