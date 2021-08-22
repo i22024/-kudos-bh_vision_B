@@ -193,6 +193,17 @@ cd ~/catkin_ws
 
 catkin_make
 ```
+>터미널 실시간성 부과
+```
+cd
+gedit .bashrc
+# 마지막 줄에 다음을 추가
+sudo sysctl -w kernel.sched_rt_runtime_us=-1
+```
+```
+sudo bash -c 'echo "@nvidia - rtprio 99" > /etc/security/limits.d/nvidia-rtprio.conf'
+sudo usermod -aG dialout nvidia
+```
 
 5. YOLO V4 설치
 >참고주소: https://wendys.tistory.com/143  
