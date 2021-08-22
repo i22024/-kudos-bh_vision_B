@@ -277,6 +277,7 @@ python darknet_images.py
 3. sudo add-apt-repository ppa:deadsnakes/ppa  
 4. sudo apt update
 5. sudo apt install python3.7
+6. sudo apt install libpython3.7-dev
 ```
 
 ```
