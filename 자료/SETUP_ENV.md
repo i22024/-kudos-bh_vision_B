@@ -225,7 +225,7 @@ tar -xvzf 해당파일.tar.gz
 압축을 해제한 cmake 폴더로 이동
 ./bootstrap --prefix=/usr/local
 make
-make install
+sudo make install
 ```
 >yolo project download
 ```
