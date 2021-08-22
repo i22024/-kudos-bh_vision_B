@@ -307,14 +307,27 @@ sudo apt-get install -y qt5-default
 ```
 sudo apt-get update
 sudo apt-get install qt5-default pyqt5-dev pyqt5-dev-tools
-sudo apt-get install python3-pyqt5
 sudo apt-get install python3-pip
 pip3 install --upgrade pip
 pip3 install --upgrade setuptools
 sudo apt-get install qttools5-dev-tools
 pip install --upgrade pip setuptools wheel
-sudo apt-get install python3-pyqt5
-sudo apt-get install python-pyqt5
+```
+
+>망할 젝슨에 pyQT를 설치하려면 직접 빌드해야 한다
+>우선 자료폴더의 PyQt5와 sip 압축파일을 다운받고 압축을 풀어준다
+>python3.7로 설치해주면 되시겠다.
+```
+sudo apt-get install qt5-default
+cd /home/nvidia/sip-4.19.14
+python3 configure.py --sip-module PyQt5.sip
+make
+sudo make install
+
+cd /home/nvidia/PyQt5_gpl-5.12.3
+python3 configure.py
+make -j4
+sudo make install
 ```
 
 
