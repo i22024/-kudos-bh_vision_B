@@ -280,17 +280,11 @@ python darknet_images.py
 ```
 
 ```
-cd
-mkdir python3
-cd python3
-sudo apt install python3-venv
-python3.7 -m venv vision(가상 공간 이름)
-source 가상 환경 경로/bin/activate
-#bashrc에도 source룰 추가해주면 항상 활성화 가능
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.5 2
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 3
 
-sudo apt-get install python3-pip
-#pip freeze로 설치 패키지를 확인할수 있다.
-sudo pip3 install pip --upgrade
+sudo update-alternatives --config python3
 ```
 
 ```
@@ -308,8 +302,16 @@ sudo apt-get install -y qt5-default
 ```
 
 ```
+sudo apt-get update
+sudo apt-get install qt5-default pyqt5-dev pyqt5-dev-tools
+sudo apt-get install python3-pyqt5
+sudo apt-get install python3-pip
+pip3 install --upgrade pip
+pip3 install --upgrade setuptools
+sudo apt-get install qttools5-dev-tools
 pip install --upgrade pip setuptools wheel
 sudo apt-get install python3-pyqt5
+sudo apt-get install python-pyqt5
 ```
 
 
