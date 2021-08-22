@@ -45,6 +45,7 @@ yolo기능과 선을 따는 기능이 합쳐져 있는 레포지스토리입니�
 - https://github.com/soyaCat/-kudos-localPackage 다음 페이지에서 mcl2패키지를 다운받아 주도록 합니다.  
 - cm을 해주면 되는데 여기서 qt임포트에서 에러가 날 수도 있습니다. 이때는 CMakeList.txt를 잘 수정해줍니다.  
 - catkin_ws/build/mcl2에 catkin_ws/src/mcl2에 있는 내용을 복붙해줍니다.   
+- cm을 할 때 humonoid_navigation에서 에러가 발생할수도 있습니다.저 같은 경우는 폴더를 삭제했으니 알아서 잘 해결..
     
     
    ---
