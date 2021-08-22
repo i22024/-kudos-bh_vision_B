@@ -284,7 +284,7 @@ cd
 mkdir python3
 cd python3
 sudo apt install python3-venv
-python3 -m venv vision(가상 공간 이름)
+python3.7 -m venv vision(가상 공간 이름)
 source 가상 환경 경로/bin/activate
 #bashrc에도 source룰 추가해주면 항상 활성화 가능
 
