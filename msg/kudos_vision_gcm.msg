@@ -1,0 +1,2 @@
+int16 main_game_state
+int16 vision_go_local

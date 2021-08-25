@@ -173,6 +173,8 @@ class App(QWidget):
         self.f_erode_power = QLineEdit(self)
         self.f_erode_power.move(470, 430)
 
+        self.label_op3_local_mode = QLabel("op3_local_mode: False", self)
+        self.label_op3_local_mode.move(600, 20)
 
         self.img_0_label = QLabel(self)
         self.img_0_label.setGeometry(0, 600, self.img_size, self.img_size)
@@ -236,7 +238,10 @@ class App(QWidget):
                 pixmap_img7 =  self.convert_nparray_to_Qpixmap(gui_param_image["erode_dilate_field"])
                 self.img_7_label.setPixmap(pixmap_img7)
 
-
+                if gui_param_image["op3_local_mode"] == False:
+                    self.label_op3_local_mode.setText("op3_local_mode: False")
+                elif gui_param_image["op3_local_mode"] == True:
+                    self.label_op3_local_mode.setText("op3_local_mode: True")
 
             except Exception as e:
                 print("Error!", e, "by_bh")

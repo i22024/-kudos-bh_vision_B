@@ -2,7 +2,7 @@
 IS_SIMULATOR = False
 import rospy
 import roslib
-from darknetb.msg import position
+from darknetb.msg import kudos_vision_ball_position as kvbp
 from sensor_msgs.msg import CompressedImage
 # import tensorflow as tf
 import darknet
@@ -56,26 +56,24 @@ if IS_SIMULATOR:
 
 # yolo 세팅
 save_input_video = False
-capture_target = 1
+capture_target = 0
 default_x = -100.0
 default_y = -100.0
 
 class priROS():
     def __init__(self):
         rospy.init_node('kudos_vision', anonymous = False)
-        self.yolo_pub = rospy.Publisher('visionPos', position, queue_size=1)
+        self.yolo_pub = rospy.Publisher('kudos_vision_ball_position', kvbp, queue_size=1)
         self.image_pub = rospy.Publisher("/output/image_raw/compressed", CompressedImage, queue_size = 1)
 
     def yolo_talker(self, message_form):
-        message = position()
+        message = kvbp()
         message.posX = message_form['posX']
         message.posY = message_form['posY']
         message.goalposX = message_form['goalposX']
         message.goalposY = message_form['goalposY']
         message.POS_size = message_form['ball_size']
         message.POS_distance = message_form['ball_distance']
-        message.desire_pan = message_form['desire_pan']
-        message.desire_tilt = message_form['desire_tilt']
         rospy.loginfo(message)
         self.yolo_pub.publish(message)
     

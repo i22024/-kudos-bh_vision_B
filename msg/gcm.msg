@@ -1,1 +1,0 @@
-int16 main_game_state

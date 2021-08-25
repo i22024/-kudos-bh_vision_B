@@ -5,8 +5,7 @@ import logging
 import argparse
 import sys
 import rospy
-from darkneta.msg import gcm
-
+from darknetb.msg import kudos_vision_gcm
 from construct import Container, ConstError
 from gamestate import GameState, ReturnData, GAME_CONTROLLER_RESPONSE_VERSION
 
@@ -29,8 +28,6 @@ parser.add_argument('--goalkeeper', action="store_true", help="if this flag is p
 class priROS():
     def __init__(self):
         pass
-
-
 
 class GameStateReceiver(object):
     def __init__(self, team, player, is_goalkeeper, addr=(DEFAULT_LISTENING_HOST, GAME_CONTROLLER_LISTEN_PORT), answer_port=GAME_CONTROLLER_ANSWER_PORT):
@@ -114,26 +111,27 @@ class GameStateReceiver(object):
 
 class SampleGameStateReceiver(GameStateReceiver):
     def talker(self, message_form):
-        pub = rospy.Publisher('visionGcm', gcm, queue_size=1)
-        rospy.init_node('visionGcm', anonymous = False)
-        message = gcm()
-        message.main_game_state = message_form['game_state']
+        pub = rospy.Publisher('kudos_vision_gcm', kudos_vision_gcm, queue_size=1)
+        rospy.init_node('kudos_vision_Game_controller_processor', anonymous = False)
+        message = kudos_vision_gcm()
+        message.main_game_state = message_form['main_game_state']
         rospy.loginfo(message)
         pub.publish(message)
+
     def on_new_gamestate(self, state):
         message_form = {
-            'game_state':-1}
+            'main_game_state':-1}
         print(state.game_state)
         if state.game_state == 'STATE_INITIAL':
-            message_form['game_state'] = 0
+            message_form['main_game_state'] = 0
         elif state.game_state == 'STATE_READY':
-            message_form['game_state'] = 1
+            message_form['main_game_state'] = 1
         elif state.game_state == 'STATE_SET':
-            message_form['game_state'] = 2
+            message_form['main_game_state'] = 2
         elif state.game_state == 'STATE_PLAYING':
-            message_form['game_state'] = 3
+            message_form['main_game_state'] = 3
         elif state.game_state == 'STATE_FINISHED':
-            message_form['game_state'] = 0
+            message_form['main_game_state'] = 0
         self.talker(message_form)
         
         #write_ros_message_here
