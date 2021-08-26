@@ -56,9 +56,18 @@ if IS_SIMULATOR:
 
 # yolo 세팅
 save_input_video = False
+yolo_processed_size = 416
 capture_target = 0
 default_x = -100.0
 default_y = -100.0
+
+#yolo mask 설정
+#mask_img는 기본적으로 전부 0인 행렬이며, 감지된 박스에 의해 값이 오르더라도 서서히 값이 0로 간다
+mask_overcoat_power = 70
+mask_remove_overcoat_power = 10
+mask_img = np.zeros((416, 416,3),dtype = np.uint8)
+mask_remove_overcoat_img = np.zeros((416, 416,3),dtype = np.uint8)
+mask_remove_overcoat_img[:,:,:] = mask_remove_overcoat_power 
 
 class priROS():
     def __init__(self):
@@ -121,14 +130,20 @@ class DataFormatTransfer():
         return objectCenter, 0
 
     def fill_black_on_detect_box(self, detections, img):
+        global mask_img
+        global mask_remove_overcoat_img
+        mask_overcoat_img = np.zeros((yolo_processed_size, yolo_processed_size,3), dtype = np.uint8)
         for detections_index, detection in enumerate(detections):
             bbox = detection[2]
             start_w = round(bbox[0]-bbox[2]/2)
             start_h = round(bbox[1]-bbox[3]/2)
             end_w = round(bbox[0]+bbox[2]/2)
             end_h = round(bbox[1]+bbox[3]/2)
-            img[start_h:end_h, start_w:end_w,:] = np.array([0,0,0])
+            mask_overcoat_img[start_h:end_h, start_w:end_w,:] = np.array([mask_overcoat_power,mask_overcoat_power,mask_overcoat_power])
         
+        mask_img = cv2.add(mask_img, mask_overcoat_img)
+        mask_img = cv2.subtract(mask_img, mask_remove_overcoat_img)
+        img = cv2.subtract(img, mask_img)
         return img
 
     def mapping_point_to_float_shape(self, npArr, objectCenter, objectSize):
@@ -164,14 +179,19 @@ if __name__=='__main__':
     
     if save_input_video == True:
         fourcc = cv2.VideoWriter_fourcc(*'DIVX')
-        out = cv2.VideoWriter('save.avi', fourcc, 25.0,(640, 480))
+        out = cv2.VideoWriter('save.avi', fourcc, 25.0,(yolo_processed_size, yolo_processed_size))
     priROS = priROS()
     DataFormatTransfer = DataFormatTransfer()
 
     while True:
         if not IS_SIMULATOR:
             ret, origin_img = cap.read()
-            origin_img = cv2.resize(origin_img, dsize=(416, 416), interpolation=cv2.INTER_AREA)
+            input_img_size = np.shape(origin_img)
+            crop_size = min(input_img_size[0], input_img_size[1])
+            start_y = round((input_img_size[0]-crop_size)/2)
+            start_x = round((input_img_size[1]-crop_size)/2)
+            origin_img = origin_img[start_y:start_y+crop_size, start_x:start_x+crop_size, :]
+            origin_img = cv2.resize(origin_img, dsize=(yolo_processed_size, yolo_processed_size), interpolation=cv2.INTER_AREA)
         elif IS_SIMULATOR:
             behavior_name = behavior_names[0]
             decision_steps, terminal_steps = env.get_steps(behavior_name)

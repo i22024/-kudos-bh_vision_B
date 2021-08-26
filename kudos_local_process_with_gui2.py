@@ -5,6 +5,7 @@ from sensor_msgs.msg import CompressedImage
 from std_msgs.msg import Bool as rosBool
 from darknetb.msg import kudos_vision_local_sensor_data as kvlsd
 from darknetb.msg import kudos_vision_head_pub as kvhp
+from darknetb.msg import kudos_vision_op3_local_mode as kvolm
 from PyQt5.QtWidgets import QApplication
 import bh_function.image_filter as MY_IMAGE_FILTER
 import bh_function.local_process_gui as bh_GUI
@@ -59,6 +60,9 @@ field_contour_erode_p = 20
 
 #op3_local_mode 여부
 op3_local_mode = False
+start_point_x = 0
+start_point_y = 0
+start_point_orien = 0
 
 #gui와 데이터를 공유할 파라미터 메시지의 폼 형성
 gui_param_message_form = {
@@ -104,6 +108,9 @@ class priROS():
         message.sensor_data_x = message_form['sensor_data_x']
         message.sensor_data_y = message_form['sensor_data_y']
         message.op3_local_mode = message_form['op3_local_mode']
+        message.start_point_x = message_form['start_point_x']
+        message.start_point_y = message_form['start_point_y']
+        message.start_point_orien = message_form['start_point_orien']
         pub.publish(message)
 
     def talker_head(self, desire_tilt):
@@ -289,10 +296,16 @@ def when_receive_yolo_image(ros_data, args):
     global field_contour_dilate_p
     global field_contour_erode_p
     global op3_local_mode
+    global start_point_x
+    global start_point_y
+    global start_point_orien
     mcl_message = {"debug_num":1,
                     "sensor_data_x":[],
                     "sensor_data_y":[],
-                    "op3_local_mode": False}
+                    "op3_local_mode": False,
+                    "start_point_x":0,
+                    "start_point_y":0,
+                    "start_point_orien":0}
     gui_param_image = gui_param_image_form
     gui_param_image["yolo_processed_img"] = 0
     gui_param_image["hsv_img"] = 0
@@ -324,7 +337,9 @@ def when_receive_yolo_image(ros_data, args):
         mcl_message["sensor_data_x"].append(-100)
         mcl_message["sensor_data_y"].append(-100)
     mcl_message["op3_local_mode"] = op3_local_mode
-
+    mcl_message["start_point_x"] = start_point_x
+    mcl_message["start_point_y"] = start_point_y
+    mcl_message["start_point_orien"] = start_point_orien
     priROS.talker(mcl_message)
     priROS.talker_head(robot_desire_tilt)
 
@@ -365,7 +380,14 @@ def when_receive_yolo_image(ros_data, args):
 def when_receive_op3_local_msg(ros_data, args):
     priROS = args[0]
     global op3_local_mode
-    op3_local_mode = ros_data.data
+    global start_point_x
+    global start_point_y
+    global start_point_orien
+    op3_local_mode = ros_data.op3_local_mode
+    start_point_x = ros_data.start_point_x
+    start_point_y = ros_data.start_point_y
+    start_point_orien = ros_data.start_point_orien
+
 
 if __name__=='__main__':
     priROS = priROS()
@@ -376,5 +398,5 @@ if __name__=='__main__':
     p.start()
     rospy.init_node('kudos_vision_local_process', anonymous = False)
     rospy.Subscriber("/output/image_raw/compressed", CompressedImage, when_receive_yolo_image,(priROS, useful_function, q, paramq), queue_size=1)
-    rospy.Subscriber("kudos_vision_op3_local_mode_msg", rosBool, when_receive_op3_local_msg,(priROS, ), queue_size=1)
+    rospy.Subscriber("kudos_vision_op3_local_mode", kvolm, when_receive_op3_local_msg,(priROS, ), queue_size=1)
     rospy.spin()

@@ -54,6 +54,7 @@ find_package(catkin REQUIRED COMPONENTS
    kudos_vision_gcm.msg
    kudos_vision_local_sensor_data.msg
    kudos_vision_head_pub.msg
+   kudos_vision_op3_local_mode.msg
  )
 
 ## Generate services in the 'srv' folder

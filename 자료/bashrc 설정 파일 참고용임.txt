@@ -129,8 +129,9 @@ alias run_mcl='cd ~/catkin_ws/build/mcl2 && ./mcl2'
 alias run_yolo='cd ~/catkin_ws/src/darknetb && python3 kudos_vision.py'
 alias run_local='cd  ~/catkin_ws/src/darknetb && python3 kudos_local_process_with_gui2.py'
 alias run_fake_gcm='cd  ~/catkin_ws/src/darknetb && (python3 fake_kudos_gcm_receiver.py&) && cd  ~/catkin_ws/src/darknetb/bh_function/bh_data/ && gedit fake_kudos_gcm_text.txt'
+alias run_fake_local='cd  ~/catkin_ws/src/darknetb && python3 fake_local.py'
 alias run1='roslaunch op3_demo demo.launch'
-alias run2='cd ~/catkin_ws/src/darknetb && (python3 kudos_vision.py&) && cd  ~/catkin_ws/src/darknetb && (python3 kudos_local_process_with_gui2.py&) && cd ~/catkin_ws/build/mcl2 && ./mcl2&'
+alias run2='cd && sudo ./jetson_clocks.sh && cd ~/catkin_ws/src/darknetb && (python3 kudos_vision.py&) && cd  ~/catkin_ws/src/darknetb && (python3 kudos_local_process_with_gui2.py&) && cd ~/catkin_ws/build/mcl2 && ./mcl2&'
 source /opt/ros/kinetic/setup.bash
 source ~/catkin_ws/devel/setup.bash
 export ROS_MASTER_URI=http://localhost:11311

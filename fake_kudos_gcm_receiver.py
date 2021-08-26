@@ -14,6 +14,9 @@ class priROS():
         message = kudos_vision_gcm()
         message.main_game_state = message_form['main_game_state']
         message.vision_go_local = message_form["vision_go_local_mode"]
+        message.fake_start_point_x = message_form["fake_start_point_x"]
+        message.fake_start_point_y = message_form["fake_start_point_y"]
+        message.fake_start_point_orien = message_form["fake_start_point_orien"]
         # rospy.loginfo(message)
         pub.publish(message)
 
@@ -31,13 +34,36 @@ if __name__=='__main__':
         message_form = {
             'main_game_state':-1,
             'vision_go_local_mode':-1,
-        }
+            'fake_start_point_x':0,
+            'fake_start_point_y':0,
+            'fake_start_point_orien':0}
+
         if input_mode == 0:
             message_form["vision_go_local_mode"] = -1
             message_form["main_game_state"] = -1
+        
         elif input_mode == 1:
             message_form["vision_go_local_mode"] = 1
             message_form["main_game_state"] = -1
+            message_form["fake_start_point_x"] = 0
+            message_form['fake_start_point_y'] = 0
+            message_form['fake_start_point_orien'] = 0
+
+        elif input_mode == 2:
+            message_form["vision_go_local_mode"] = 1
+            message_form["main_game_state"] = -1
+            message_form["fake_start_point_x"] = 300
+            message_form['fake_start_point_y'] = 100
+            message_form['fake_start_point_orien'] = 90
+
+        elif input_mode == 3:
+            message_form["vision_go_local_mode"] = 1
+            message_form["main_game_state"] = -1
+            message_form["fake_start_point_x"] = -200
+            message_form['fake_start_point_y'] = -200
+            message_form['fake_start_point_orien'] = -90
+
+
         time.sleep(1)
         priROS.talker(message_form)
 
