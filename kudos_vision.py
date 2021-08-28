@@ -1,5 +1,6 @@
 "#!/usr/bin/env python"
-IS_SIMULATOR = False
+IS_SIMULATOR = True
+SAVE_INPUT_VIDEO = False
 import rospy
 import roslib
 from darknetb.msg import kudos_vision_ball_position as kvbp
@@ -55,7 +56,6 @@ if IS_SIMULATOR:
     list_index_for_top_view = 7
 
 # yolo 세팅
-save_input_video = False
 yolo_processed_size = 416
 capture_target = 0
 default_x = -100.0
@@ -74,6 +74,7 @@ class priROS():
         rospy.init_node('kudos_vision', anonymous = False)
         self.yolo_pub = rospy.Publisher('kudos_vision_ball_position', kvbp, queue_size=1)
         self.image_pub = rospy.Publisher("/output/image_raw/compressed", CompressedImage, queue_size = 1)
+        self.yolo_result_img_pub = rospy.Publisher("/output/image_raw2/compressed", CompressedImage, queue_size = 1)
 
     def yolo_talker(self, message_form):
         message = kvbp()
@@ -83,7 +84,6 @@ class priROS():
         message.goalposY = message_form['goalposY']
         message.POS_size = message_form['ball_size']
         message.POS_distance = message_form['ball_distance']
-        rospy.loginfo(message)
         self.yolo_pub.publish(message)
     
     def img_talker(self, image_np):
@@ -93,6 +93,15 @@ class priROS():
         msg.format = "jpeg"
         msg.data = np.array(cv2.imencode('.jpg', image_np)[1]).tostring()
         self.image_pub.publish(msg)
+
+    def yolo_result_img_talker(self, image_np):
+        import cv2
+        print(np.shape(image_np))
+        msg = CompressedImage()
+        msg.header.stamp = rospy.Time.now()
+        msg.format = "jpeg"
+        msg.data = np.array(cv2.imencode('.jpg', image_np)[1]).tostring()
+        self.yolo_result_img_pub.publish(msg)
 
 class DataFormatTransfer():
     def __init__(self):
@@ -177,7 +186,7 @@ if __name__=='__main__':
         cap = cv2.VideoCapture(capture_target)
         cap.set(cv2.CAP_PROP_AUTOFOCUS, 0)
     
-    if save_input_video == True:
+    if SAVE_INPUT_VIDEO:
         fourcc = cv2.VideoWriter_fourcc(*'DIVX')
         out = cv2.VideoWriter('save.avi', fourcc, 25.0,(yolo_processed_size, yolo_processed_size))
     priROS = priROS()
@@ -200,14 +209,15 @@ if __name__=='__main__':
             origin_img = vis_observation_list[list_index_for_ALL]
             origin_img = cv2.cvtColor(origin_img, cv2.COLOR_BGR2RGB)
 
-        if save_input_video == True:
-            out.write(frame)
+        if SAVE_INPUT_VIDEO == True:
+            out.write(origin_img)
         frame, detections = kudos_darknet.getResults_with_darknet(ret, origin_img, darknet_width, darknet_height, darknet_network, darknet_class_names, darknet_class_colors,darknet_config_args)
         ballCenter = [-100.0, -100.0]
         goalCenter = [-100.0, -100.0]
         ball_size = 0
         if np.any(frame) != False:
             #cv2.imshow("showIMG", frame)
+            priROS.yolo_result_img_talker(frame)
             ballCenter, ball_size = DataFormatTransfer.get_one_center_from_detections(detections, label='ball')
             ballCenter,ball_size = DataFormatTransfer.mapping_point_to_float_shape(frame, ballCenter, ball_size)
             goalCenter,_ = DataFormatTransfer.get_mean_center_from_detections(detections, label='goal')

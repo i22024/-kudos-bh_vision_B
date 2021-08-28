@@ -37,8 +37,16 @@ roi_push_move = 120
 # 팽창과 침식 정도를 결정하는 변수이다.
 dilate_power = 6 #팽창강도
 erode_power = 5 #침식강도
-# 대표 픽셀을 추출할 때 기준 거리를 결정하는 변수이다.
-standard_pixel_distance = 40
+
+# 대표 픽셀을 추출할 때 기준 거리 범위
+standard_pixel_max_distance = 60
+standard_pixel_min_distance = 5
+standard_pixel_distance_unit = 5
+standard_pixel_distance = 0
+standard_pixel_recommend_min_num = 22
+standard_pixel_recommend_max_num = 23
+standard_pixel_limit_num = 100
+
 #잡음 제거를 위한 가우시안 필터 강도 설정
 guassian_filter_size = 1
 
@@ -49,6 +57,7 @@ cp_size_right_loc = 3
 
 #로봇 고개 각도 설정
 robot_desire_tilt = 45
+
 
 #경기장의 hsv범위
 field_minimum_condition = np.array([20, 230, 20])
@@ -63,6 +72,10 @@ op3_local_mode = False
 start_point_x = 0
 start_point_y = 0
 start_point_orien = 0
+start_point_xy_distribution = 0
+start_point_orien_distribution = 0
+start_point_diff_limit_wslow_wfast = 1.0
+mcl2_particle_num = 100
 
 #gui와 데이터를 공유할 파라미터 메시지의 폼 형성
 gui_param_message_form = {
@@ -73,7 +86,6 @@ gui_param_message_form = {
     "roi_push_move": 0,
     "dilate_power": 0,
     "erode_power": 0,
-    "pixel_distance": 0,
     "guassian_filter_size": 0,
     "empty_size_mul": 0,
     "cp_size_left_loc":0,
@@ -82,7 +94,13 @@ gui_param_message_form = {
     "field_minimum_condition": [0,0,0],
     "field_maximum_condition": [0,0,0],
     "field_contour_dilate_p":0,
-    "field_contour_erode_p":0}
+    "field_contour_erode_p":0,
+    "standard_pixel_max_distance":0,
+    "standard_pixel_min_distance":0,
+    "standard_pixel_distance_unit":0,
+    "start_point_xy_distribution" :0,
+    "start_point_orien_distribution":0,
+    "start_point_diff_limit_wslow_wfast":0}
 
 gui_param_image_form = {
     "yolo_processed_img":0,
@@ -94,7 +112,8 @@ gui_param_image_form = {
     "resize_img":0,
     "erode_dilate_line":0,
     "distance_line":0,
-    "op3_local_mode":False}
+    "op3_local_mode":False,
+    "num_of_line_point":0}
 
 
 class priROS():
@@ -108,9 +127,15 @@ class priROS():
         message.sensor_data_x = message_form['sensor_data_x']
         message.sensor_data_y = message_form['sensor_data_y']
         message.op3_local_mode = message_form['op3_local_mode']
+        message.xy_distribution = message_form["xy_distribution"]
+        message.orien_distribution = message_form["orien_distribution"]
+        message.diff_limit_wslow_wfast = message_form["diff_limit_wslow_wfast"]
         message.start_point_x = message_form['start_point_x']
         message.start_point_y = message_form['start_point_y']
         message.start_point_orien = message_form['start_point_orien']
+        message.start_point_x_list = message_form['start_point_x_list']
+        message.start_point_y_list = message_form['start_point_y_list']
+        message.start_point_orien_list = message_form['start_point_orien_list']
         pub.publish(message)
 
     def talker_head(self, desire_tilt):
@@ -237,6 +262,25 @@ class useful_function():
         '''
         return point_list
 
+    def get_start_point_candidate(self, start_point_x, start_point_y, start_point_orien, xy_distribution, orien_distribution, particle_num):
+        start_point_x_list = []
+        start_point_y_list = []
+        start_point_orien_list = []
+        stp_rand_oriens = np.random.uniform(low=-3.17, high=3.17, size=particle_num)
+        stp_normal_distribution_distances = np.random.normal(0, xy_distribution, size = particle_num)
+        stp_normal_distribution_particle_oriens = np.random.normal(0, orien_distribution, size = particle_num)
+        for i in range(particle_num):
+            x = math.cos(stp_rand_oriens[i])*stp_normal_distribution_distances[i]
+            x = x + start_point_x
+            start_point_x_list.append(x)
+            y = math.sin(stp_rand_oriens[i])*stp_normal_distribution_distances[i]
+            y = y + start_point_y
+            start_point_y_list.append(y)
+            orien = start_point_orien+stp_normal_distribution_particle_oriens[i]
+            start_point_orien_list.append(orien)
+        
+        return start_point_x_list, start_point_y_list, start_point_orien_list
+
 
     def field_image_mask(self, top_view_npArr, field_minimum_condition, field_maximum_condition, roi_size, field_contour_dilate_p, field_contour_erode_p, gui_param_image):
         top_view_npArr = cv2.cvtColor(top_view_npArr, cv2.COLOR_BGR2HSV)
@@ -281,7 +325,13 @@ def when_receive_yolo_image(ros_data, args):
     global roi_push_move
     global dilate_power
     global erode_power
+    global standard_pixel_max_distance
+    global standard_pixel_min_distance
+    global standard_pixel_distance_unit
     global standard_pixel_distance
+    global standard_pixel_recommend_max_num
+    global standard_pixel_recommend_min_num
+    global standard_pixel_limit_num
     global guassian_filter_size
 
     global empty_size_mul
@@ -295,17 +345,29 @@ def when_receive_yolo_image(ros_data, args):
 
     global field_contour_dilate_p
     global field_contour_erode_p
+
     global op3_local_mode
     global start_point_x
     global start_point_y
     global start_point_orien
+    global start_point_xy_distribution
+    global start_point_orien_distribution
+    global start_point_diff_limit_wslow_wfast
+    global mcl2_particle_num
+
     mcl_message = {"debug_num":1,
                     "sensor_data_x":[],
                     "sensor_data_y":[],
                     "op3_local_mode": False,
+                    "xy_distribution":0,
+                    "orien_distribution":0,
+                    "diff_limit_wslow_wfast":0,
                     "start_point_x":0,
                     "start_point_y":0,
-                    "start_point_orien":0}
+                    "start_point_orien":0,
+                    "start_point_x_list":[],
+                    "start_point_y_list":[],
+                    "start_point_orien_list":[]}
     gui_param_image = gui_param_image_form
     gui_param_image["yolo_processed_img"] = 0
     gui_param_image["hsv_img"] = 0
@@ -316,6 +378,7 @@ def when_receive_yolo_image(ros_data, args):
     gui_param_image["resize_img"] = 0
     gui_param_image["erode_dilate_line"] = 0
     gui_param_image["distance_line"] = 0
+    gui_param_image["num_of_line_point"] = 0
 
     # 여기부턴 이미지 변환
     np_arr = np.fromstring(ros_data.data, np.uint8)
@@ -325,22 +388,45 @@ def when_receive_yolo_image(ros_data, args):
     contour_img, gui_param_image = useful_function.field_image_mask(top_view_npArr, field_minimum_condition, field_maximum_condition, roi_size, field_contour_dilate_p, field_contour_erode_p, gui_param_image)
     masked_top_view_npArr, gui_param_image = useful_function.Image_mask(top_view_npArr, contour_img, mask_minimum_condition, mask_maximum_condition, roi_size, dilate_power, erode_power, gui_param_image)
     indexing_masked = np.where(masked_top_view_npArr>254)
-    point_list = useful_function.get_profit_point(masked_top_view_npArr, indexing_masked, standard_pixel_distance)
+
+    point_list = []
+
+    if standard_pixel_max_distance >= standard_pixel_min_distance:
+        if standard_pixel_distance > standard_pixel_max_distance:
+            standard_pixel_distance = standard_pixel_max_distance
+        elif standard_pixel_distance < standard_pixel_min_distance:
+            standard_pixel_distance = standard_pixel_min_distance
+        point_list = useful_function.get_profit_point(masked_top_view_npArr, indexing_masked, standard_pixel_distance)
+        if len(point_list)  < standard_pixel_recommend_min_num:
+            standard_pixel_distance -= standard_pixel_distance_unit
+        elif len(point_list) > standard_pixel_recommend_max_num:
+            standard_pixel_distance += standard_pixel_distance_unit
+    
+    gui_param_image["num_of_line_point"] = len(point_list)
     circle_img = np.zeros_like(masked_top_view_npArr, np.uint8)
     for point in point_list:
         cv2.circle(circle_img, (point[1], point[0]), 5, 255)
     gui_param_image["distance_line"] = circle_img
-    for point in point_list:
-        mcl_message["sensor_data_y"].append(point[0]-(pre_processing_size//2))
-        mcl_message["sensor_data_x"].append(point[1]+roi_push_move)
-    for i in range(100-len(point_list)):
-        mcl_message["sensor_data_x"].append(-100)
-        mcl_message["sensor_data_y"].append(-100)
-    mcl_message["op3_local_mode"] = op3_local_mode
-    mcl_message["start_point_x"] = start_point_x
-    mcl_message["start_point_y"] = start_point_y
-    mcl_message["start_point_orien"] = start_point_orien
-    priROS.talker(mcl_message)
+    if len(point_list) < standard_pixel_limit_num:
+        for point in point_list:
+            mcl_message["sensor_data_y"].append(point[0]-(pre_processing_size//2))
+            mcl_message["sensor_data_x"].append(point[1]+roi_push_move)
+        for i in range(standard_pixel_limit_num-len(point_list)):
+            mcl_message["sensor_data_x"].append(-100)
+            mcl_message["sensor_data_y"].append(-100)
+        mcl_message["op3_local_mode"] = op3_local_mode
+        mcl_message["start_point_x"] = start_point_x
+        mcl_message["start_point_y"] = start_point_y
+        mcl_message["start_point_orien"] = start_point_orien
+        mcl_message["xy_distribution"] = start_point_xy_distribution
+        mcl_message["orien_distribution"] = start_point_orien_distribution
+        mcl_message["diff_limit_wslow_wfast"] = start_point_diff_limit_wslow_wfast
+        start_point_x_list, start_point_y_list, start_point_orien_list = useful_function.get_start_point_candidate(start_point_x, start_point_y, start_point_orien, start_point_xy_distribution, start_point_orien_distribution, mcl2_particle_num)
+        mcl_message["start_point_x_list"] = start_point_x_list
+        mcl_message["start_point_y_list"] = start_point_y_list
+        mcl_message["start_point_orien_list"] = start_point_orien_list
+
+        priROS.talker(mcl_message)
     priROS.talker_head(robot_desire_tilt)
 
     # 큐에 그냥 put을 하면 데드락이 걸리기 때문에, put_nowait를 써서 gui가 별개로 돌아가게 만든다
@@ -359,7 +445,9 @@ def when_receive_yolo_image(ros_data, args):
         roi_push_move = param_dic["roi_push_move"]
         dilate_power = param_dic["dilate_power"]
         erode_power = param_dic["erode_power"]
-        standard_pixel_distance = param_dic["pixel_distance"]
+        standard_pixel_max_distance = param_dic["standard_pixel_max_distance"]
+        standard_pixel_min_distance = param_dic["standard_pixel_min_distance"]
+        standard_pixel_distance_unit = param_dic["standard_pixel_distance_unit"]
         guassian_filter_size = param_dic["guassian_filter_size"]
         empty_size_mul = param_dic["empty_size_mul"]
         cp_size_left_loc = param_dic["cp_size_left_loc"]
@@ -369,6 +457,9 @@ def when_receive_yolo_image(ros_data, args):
         field_maximum_condition = param_dic["field_maximum_condition"]
         field_contour_dilate_p = param_dic["field_contour_dilate_p"]
         field_contour_erode_p = param_dic["field_contour_erode_p"]
+        start_point_xy_distribution = param_dic["start_point_xy_distribution"]
+        start_point_orien_distribution = param_dic["start_point_orien_distribution"]
+        start_point_diff_limit_wslow_wfast = param_dic["start_point_diff_limit_wslow_wfast"]
         
         mask_minimum_condition = np.array(mask_minimum_condition)
         mask_maximum_condition = np.array(mask_maximum_condition)
