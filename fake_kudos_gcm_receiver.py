@@ -53,14 +53,14 @@ if __name__=='__main__':
             message_form["vision_go_local_mode"] = 1
             message_form["main_game_state"] = -1
             message_form["fake_start_point_x"] = 300
-            message_form['fake_start_point_y'] = 100
+            message_form['fake_start_point_y'] = 0
             message_form['fake_start_point_orien'] = 90
 
         elif input_mode == 3:
             message_form["vision_go_local_mode"] = 1
             message_form["main_game_state"] = -1
-            message_form["fake_start_point_x"] = -200
-            message_form['fake_start_point_y'] = -200
+            message_form["fake_start_point_x"] = -300
+            message_form['fake_start_point_y'] = 0
             message_form['fake_start_point_orien'] = -90
 
 

@@ -133,9 +133,6 @@ class priROS():
         message.start_point_x = message_form['start_point_x']
         message.start_point_y = message_form['start_point_y']
         message.start_point_orien = message_form['start_point_orien']
-        message.start_point_x_list = message_form['start_point_x_list']
-        message.start_point_y_list = message_form['start_point_y_list']
-        message.start_point_orien_list = message_form['start_point_orien_list']
         pub.publish(message)
 
     def talker_head(self, desire_tilt):
@@ -262,26 +259,6 @@ class useful_function():
         '''
         return point_list
 
-    def get_start_point_candidate(self, start_point_x, start_point_y, start_point_orien, xy_distribution, orien_distribution, particle_num):
-        start_point_x_list = []
-        start_point_y_list = []
-        start_point_orien_list = []
-        stp_rand_oriens = np.random.uniform(low=-3.17, high=3.17, size=particle_num)
-        stp_normal_distribution_distances = np.random.normal(0, xy_distribution, size = particle_num)
-        stp_normal_distribution_particle_oriens = np.random.normal(0, orien_distribution, size = particle_num)
-        for i in range(particle_num):
-            x = math.cos(stp_rand_oriens[i])*stp_normal_distribution_distances[i]
-            x = x + start_point_x
-            start_point_x_list.append(x)
-            y = math.sin(stp_rand_oriens[i])*stp_normal_distribution_distances[i]
-            y = y + start_point_y
-            start_point_y_list.append(y)
-            orien = start_point_orien+stp_normal_distribution_particle_oriens[i]
-            start_point_orien_list.append(orien)
-        
-        return start_point_x_list, start_point_y_list, start_point_orien_list
-
-
     def field_image_mask(self, top_view_npArr, field_minimum_condition, field_maximum_condition, roi_size, field_contour_dilate_p, field_contour_erode_p, gui_param_image):
         top_view_npArr = cv2.cvtColor(top_view_npArr, cv2.COLOR_BGR2HSV)
         contour_img = np.empty_like(top_view_npArr)
@@ -364,10 +341,7 @@ def when_receive_yolo_image(ros_data, args):
                     "diff_limit_wslow_wfast":0,
                     "start_point_x":0,
                     "start_point_y":0,
-                    "start_point_orien":0,
-                    "start_point_x_list":[],
-                    "start_point_y_list":[],
-                    "start_point_orien_list":[]}
+                    "start_point_orien":0}
     gui_param_image = gui_param_image_form
     gui_param_image["yolo_processed_img"] = 0
     gui_param_image["hsv_img"] = 0
@@ -421,10 +395,6 @@ def when_receive_yolo_image(ros_data, args):
         mcl_message["xy_distribution"] = start_point_xy_distribution
         mcl_message["orien_distribution"] = start_point_orien_distribution
         mcl_message["diff_limit_wslow_wfast"] = start_point_diff_limit_wslow_wfast
-        start_point_x_list, start_point_y_list, start_point_orien_list = useful_function.get_start_point_candidate(start_point_x, start_point_y, start_point_orien, start_point_xy_distribution, start_point_orien_distribution, mcl2_particle_num)
-        mcl_message["start_point_x_list"] = start_point_x_list
-        mcl_message["start_point_y_list"] = start_point_y_list
-        mcl_message["start_point_orien_list"] = start_point_orien_list
 
         priROS.talker(mcl_message)
     priROS.talker_head(robot_desire_tilt)
