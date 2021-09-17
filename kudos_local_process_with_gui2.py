@@ -419,9 +419,10 @@ def when_receive_yolo_image(ros_data, args):
         standard_pixel_min_distance = param_dic["standard_pixel_min_distance"]
         standard_pixel_distance_unit = param_dic["standard_pixel_distance_unit"]
         guassian_filter_size = param_dic["guassian_filter_size"]
-        empty_size_mul = param_dic["empty_size_mul"]
-        cp_size_left_loc = param_dic["cp_size_left_loc"]
-        cp_size_right_loc = param_dic["cp_size_right_loc"]
+        if (param_dic["cp_size_left_loc"] + param_dic["cp_size_right_loc"]) <= param_dic["empty_size_mul"]: 
+            empty_size_mul = param_dic["empty_size_mul"]
+            cp_size_left_loc = param_dic["cp_size_left_loc"]
+            cp_size_right_loc = param_dic["cp_size_right_loc"]
         robot_desire_tilt = param_dic["tilt_degree"]
         field_minimum_condition = param_dic["field_minimum_condition"]
         field_maximum_condition = param_dic["field_maximum_condition"]
