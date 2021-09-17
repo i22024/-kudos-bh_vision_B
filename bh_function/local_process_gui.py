@@ -198,6 +198,21 @@ class App(QWidget):
         self.start_point_diff_limit_wslow_wfast = QLineEdit(self)
         self.start_point_diff_limit_wslow_wfast.move(620, 530)
 
+        label_setting_point_list_num = QLabel("감지 포인트 개수 설정", self)
+        label_setting_point_list_num.move(720, 160)
+        label_setting_point_list_num = QLabel("전송최소개수",self)
+        label_setting_point_list_num.move(720, 180)
+        self.standard_pixel_send_min_num = QLineEdit(self)
+        self.standard_pixel_send_min_num.move(820, 180)
+        label_setting_point_list_num = QLabel("전송최대개수",self)
+        label_setting_point_list_num.move(720, 200)
+        self.standard_pixel_send_max_num = QLineEdit(self)
+        self.standard_pixel_send_max_num.move(820, 200)
+        label_setting_point_list_num = QLabel("대기카운트",self)
+        label_setting_point_list_num.move(720, 220)
+        self.standard_pixel_send_wait_count = QLineEdit(self)
+        self.standard_pixel_send_wait_count.move(820, 220)
+        
 
         self.label_op3_local_mode = QLabel("op3_local_mode: False", self)
         self.label_op3_local_mode.move(600, 20)
@@ -304,6 +319,9 @@ class App(QWidget):
                 self.gui_param_message["standard_pixel_max_distance"] = int(self.standard_pixel_max_distance.text())
                 self.gui_param_message["standard_pixel_min_distance"] = int(self.standard_pixel_min_distance.text())
                 self.gui_param_message["standard_pixel_distance_unit"] = int(self.standard_pixel_distance_unit.text())
+                self.gui_param_message["standard_pixel_send_min_num"] = int(self.standard_pixel_send_min_num.text())
+                self.gui_param_message["standard_pixel_send_max_num"] = int(self.standard_pixel_send_max_num.text())
+                self.gui_param_message["standard_pixel_send_wait_count"] = int(self.standard_pixel_send_wait_count.text())
                 self.gui_param_message["start_point_xy_distribution"] = float(self.start_point_xy_distribution.text())
                 self.gui_param_message["start_point_orien_distribution"] = float(self.start_point_orien_distribution.text())
                 self.gui_param_message["start_point_diff_limit_wslow_wfast"] = float(self.start_point_diff_limit_wslow_wfast.text())
@@ -361,6 +379,9 @@ class App(QWidget):
             self.start_point_xy_distribution.setText(data_list[29])
             self.start_point_orien_distribution.setText(data_list[30])
             self.start_point_diff_limit_wslow_wfast.setText(data_list[31])
+            self.standard_pixel_send_min_num.setText(data_list[32])
+            self.standard_pixel_send_max_num.setText(data_list[33])
+            self.standard_pixel_send_wait_count.setText(data_list[34])
         except Exception as e:
             pass
         QMessageBox.about(self, "message", "데이터 로드와 적용!")
@@ -400,6 +421,9 @@ class App(QWidget):
         minipack.append(self.start_point_xy_distribution.text())
         minipack.append(self.start_point_orien_distribution.text())
         minipack.append(self.start_point_diff_limit_wslow_wfast.text())
+        minipack.append(self.standard_pixel_send_min_num.text())
+        minipack.append(self.standard_pixel_send_max_num.text())
+        minipack.append(self.standard_pixel_send_wait_count.text())
         for index, data in enumerate(minipack):
             try:
                 data = data.replace("\n","")

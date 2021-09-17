@@ -45,6 +45,10 @@ standard_pixel_distance_unit = 5
 standard_pixel_distance = 0
 standard_pixel_recommend_min_num = 22
 standard_pixel_recommend_max_num = 23
+standard_pixel_send_min_num = 15
+standard_pixel_send_max_num = 30
+standard_pixel_send_wait_count = 5
+standard_pixel_im_ready_count = 0 #유동 변수로 준비가 다 되면 하나씩 늘어난다.
 standard_pixel_limit_num = 100
 
 #잡음 제거를 위한 가우시안 필터 강도 설정
@@ -98,6 +102,9 @@ gui_param_message_form = {
     "standard_pixel_max_distance":0,
     "standard_pixel_min_distance":0,
     "standard_pixel_distance_unit":0,
+    "standard_pixel_send_min_num":0,
+    "standard_pixel_send_max_num":0,
+    "standard_pixel_send_wait_count":0,
     "start_point_xy_distribution" :0,
     "start_point_orien_distribution":0,
     "start_point_diff_limit_wslow_wfast":0}
@@ -135,7 +142,7 @@ class priROS():
         message.start_point_orien = message_form['start_point_orien']
         pub.publish(message)
 
-    def talker_head(self, desire_tilt):
+    def talker_head(self, desire_tilt, point_count):
         pub = rospy.Publisher('kudos_vision_head_pub', kvhp, queue_size=1)
         message = kvhp()
         desire_tilt = desire_tilt*math.pi/180
@@ -143,6 +150,7 @@ class priROS():
         desire_pan = 0
         message.pan = desire_pan
         message.tilt = desire_tilt
+        message.point_count = point_count
         pub.publish(message)
 
 class useful_function():
@@ -308,6 +316,10 @@ def when_receive_yolo_image(ros_data, args):
     global standard_pixel_distance
     global standard_pixel_recommend_max_num
     global standard_pixel_recommend_min_num
+    global standard_pixel_send_min_num
+    global standard_pixel_send_max_num
+    global standard_pixel_im_ready_count
+    global standard_pixel_send_wait_count
     global standard_pixel_limit_num
     global guassian_filter_size
 
@@ -396,8 +408,16 @@ def when_receive_yolo_image(ros_data, args):
         mcl_message["orien_distribution"] = start_point_orien_distribution
         mcl_message["diff_limit_wslow_wfast"] = start_point_diff_limit_wslow_wfast
 
-        priROS.talker(mcl_message)
-    priROS.talker_head(robot_desire_tilt)
+        if len(point_list) > standard_pixel_send_min_num and len(point_list) < standard_pixel_send_max_num and op3_local_mode is True:
+            if standard_pixel_send_wait_count < standard_pixel_im_ready_count:
+                mcl_message["op3_local_mode"] = op3_local_mode
+                priROS.talker(mcl_message)
+            else:
+                standard_pixel_im_ready_count += 1
+        elif op3_local_mode is False:
+            standard_pixel_im_ready_count = 0
+
+    priROS.talker_head(robot_desire_tilt, len(point_list))
 
     # 큐에 그냥 put을 하면 데드락이 걸리기 때문에, put_nowait를 써서 gui가 별개로 돌아가게 만든다
     gui_param_image["op3_local_mode"] = op3_local_mode
@@ -410,7 +430,7 @@ def when_receive_yolo_image(ros_data, args):
         param_dic = paramq.get_nowait()
         mask_minimum_condition = param_dic["mask_minimum_condition"]
         mask_maximum_condition = param_dic["mask_maximum_condition"]
-        pre_process_size = param_dic["pre_processing_size"]
+        pre_processing_size = param_dic["pre_processing_size"]
         roi_size = param_dic["roi_size"]
         roi_push_move = param_dic["roi_push_move"]
         dilate_power = param_dic["dilate_power"]
@@ -418,6 +438,9 @@ def when_receive_yolo_image(ros_data, args):
         standard_pixel_max_distance = param_dic["standard_pixel_max_distance"]
         standard_pixel_min_distance = param_dic["standard_pixel_min_distance"]
         standard_pixel_distance_unit = param_dic["standard_pixel_distance_unit"]
+        standard_pixel_send_min_num = param_dic["standard_pixel_send_min_num"]
+        standard_pixel_send_max_num = param_dic["standard_pixel_send_max_num"]
+        standard_pixel_send_wait_count = param_dic["standard_pixel_send_wait_count"]
         guassian_filter_size = param_dic["guassian_filter_size"]
         if (param_dic["cp_size_left_loc"] + param_dic["cp_size_right_loc"]) <= param_dic["empty_size_mul"]: 
             empty_size_mul = param_dic["empty_size_mul"]

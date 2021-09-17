@@ -69,6 +69,9 @@ mask_img = np.zeros((416, 416,3),dtype = np.uint8)
 mask_remove_overcoat_img = np.zeros((416, 416,3),dtype = np.uint8)
 mask_remove_overcoat_img[:,:,:] = mask_remove_overcoat_power 
 
+# kudos_local_process로 보내는 이미지 보내는 주기(1이면 매 반복문마다 보냄)
+send_preprocessed_img_jump_count = 6
+
 class priROS():
     def __init__(self):
         rospy.init_node('kudos_vision', anonymous = False)
@@ -192,6 +195,8 @@ if __name__=='__main__':
     priROS = priROS()
     DataFormatTransfer = DataFormatTransfer()
 
+
+    process_count = 0;
     while True:
         if not IS_SIMULATOR:
             ret, origin_img = cap.read()
@@ -239,9 +244,14 @@ if __name__=='__main__':
         #message_form["desire_pan"], message_form["desite_tilt"] = kudos_tracker.tracking_ball(message_form)
         priROS.yolo_talker(vision_message)
         black_on_detect_box_img = DataFormatTransfer.fill_black_on_detect_box(detections, origin_img)
-        priROS.img_talker(black_on_detect_box_img)
-       
+        
+        if process_count%send_preprocessed_img_jump_count == 0:
+            priROS.img_talker(black_on_detect_box_img)
 
+        if process_count > 10000:
+            process_count = 0
+        process_count +=1
+        
         if IS_SIMULATOR:
             action = [3, 4, 0, 40]
             actionTuple = ConversionDataType.ConvertList2DiscreteAction(action, behavior_name)
