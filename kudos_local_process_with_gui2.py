@@ -50,6 +50,7 @@ standard_pixel_send_max_num = 30
 standard_pixel_send_wait_count = 5
 standard_pixel_im_ready_count = 0 #유동 변수로 준비가 다 되면 하나씩 늘어난다.
 standard_pixel_limit_num = 100
+optim_resize_const = 3 #해당 배수 만큼 이미지를 리사이즈 한 뒤 거리 필터를 통과시켜 최적화를 한다.
 
 #잡음 제거를 위한 가우시안 필터 강도 설정
 guassian_filter_size = 1
@@ -235,8 +236,9 @@ class useful_function():
 
         return masked_hsv_top_view_npArr, gui_param_image
     
-    def get_profit_point(self, masked_top_view_npArr, indexing_masked, standard_pixel_distance):
-        circle_img = np.zeros_like(masked_top_view_npArr, np.uint8)
+    def get_profit_point(self, optim_resize_masked_top_view_npArr, indexing_masked, standard_pixel_distance, standard_pixel_recommend_max_num, optim_resize_const):
+        standard_pixel_distance /= optim_resize_const
+        circle_img = np.zeros_like(optim_resize_masked_top_view_npArr, np.uint8)
         point_list = []
         for index in range(len(indexing_masked[0])):
             tmp_point = [indexing_masked[0][index], indexing_masked[1][index]]
@@ -250,8 +252,13 @@ class useful_function():
                          min_distance = distance
                 if min_distance > standard_pixel_distance:
                     point_list.append(tmp_point)
+            if standard_pixel_recommend_max_num < len(point_list):
+                break
 
-        final_point_list = point_list.copy()
+        for index, point in enumerate(point_list):
+            point[0] *= optim_resize_const
+            point[1] *= optim_resize_const
+            point_list[index] = point 
         '''
         total_point_list = []
         for point in final_point_list:
@@ -297,6 +304,7 @@ def run_gui(q, paramq, gui_param_message_form, gui_param_image_form):
     app.exec_()
 
 def when_receive_yolo_image(ros_data, args):
+    #start = time.time()
     #파라미터 초기화
     priROS = args[0]
     useful_function = args[1]
@@ -321,6 +329,7 @@ def when_receive_yolo_image(ros_data, args):
     global standard_pixel_im_ready_count
     global standard_pixel_send_wait_count
     global standard_pixel_limit_num
+    global optim_resize_const
     global guassian_filter_size
 
     global empty_size_mul
@@ -373,7 +382,11 @@ def when_receive_yolo_image(ros_data, args):
     gui_param_image["yolo_processed_img"] = top_view_npArr
     contour_img, gui_param_image = useful_function.field_image_mask(top_view_npArr, field_minimum_condition, field_maximum_condition, roi_size, field_contour_dilate_p, field_contour_erode_p, gui_param_image)
     masked_top_view_npArr, gui_param_image = useful_function.Image_mask(top_view_npArr, contour_img, mask_minimum_condition, mask_maximum_condition, roi_size, dilate_power, erode_power, gui_param_image)
-    indexing_masked = np.where(masked_top_view_npArr>254)
+    
+    optim_resize_masked_top_view_npArr = cv2.resize(masked_top_view_npArr, 
+                                                    dsize = (round(np.shape(masked_top_view_npArr)[1]/optim_resize_const), round(np.shape(masked_top_view_npArr)[0]/optim_resize_const)),
+                                                    interpolation=cv2.INTER_AREA)
+    indexing_masked = np.where(optim_resize_masked_top_view_npArr>254)
 
     point_list = []
 
@@ -382,7 +395,7 @@ def when_receive_yolo_image(ros_data, args):
             standard_pixel_distance = standard_pixel_max_distance
         elif standard_pixel_distance < standard_pixel_min_distance:
             standard_pixel_distance = standard_pixel_min_distance
-        point_list = useful_function.get_profit_point(masked_top_view_npArr, indexing_masked, standard_pixel_distance)
+        point_list = useful_function.get_profit_point(optim_resize_masked_top_view_npArr, indexing_masked, standard_pixel_distance, standard_pixel_recommend_max_num, optim_resize_const)
         if len(point_list)  < standard_pixel_recommend_min_num:
             standard_pixel_distance -= standard_pixel_distance_unit
         elif len(point_list) > standard_pixel_recommend_max_num:
@@ -461,6 +474,9 @@ def when_receive_yolo_image(ros_data, args):
         field_maximum_condition = np.array(field_maximum_condition)
     except Exception as e:
         pass
+
+    #end = time.time()
+    #print("코드 총 실행 시간:{:.5f}, 감지된 포인트당 수행시간:{:.5f}".format(start-end, (start-end)/len(point_list)))
 
 def when_receive_op3_local_msg(ros_data, args):
     priROS = args[0]

@@ -70,7 +70,7 @@ mask_remove_overcoat_img = np.zeros((416, 416,3),dtype = np.uint8)
 mask_remove_overcoat_img[:,:,:] = mask_remove_overcoat_power 
 
 # kudos_local_process로 보내는 이미지 보내는 주기(1이면 매 반복문마다 보냄)
-send_preprocessed_img_jump_count = 6
+send_preprocessed_img_jump_count = 1
 
 class priROS():
     def __init__(self):
