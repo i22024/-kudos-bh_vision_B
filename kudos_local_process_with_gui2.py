@@ -1,29 +1,32 @@
 "#!/usr/bin/env python"
 # 라이브러리 임포트
 import rospy
-from sensor_msgs.msg import CompressedImage
-from std_msgs.msg import Bool as rosBool
-from darknetb.msg import kudos_vision_local_sensor_data as kvlsd
-from darknetb.msg import kudos_vision_head_pub as kvhp
-from darknetb.msg import kudos_vision_op3_local_mode as kvolm
-from PyQt5.QtWidgets import QApplication
-import bh_function.image_filter as MY_IMAGE_FILTER
-import bh_function.local_process_gui as bh_GUI
-import numpy as np
-import sys
+from sensor_msgs.msg import CompressedImage                          #이미지는 컴프레스 이미지 사용 (메세지 형태 선언안해도 될수있게 import)
+from std_msgs.msg import Bool as rosBool                             # 사용 안함
+from darknetb.msg import kudos_vision_local_sensor_data as kvlsd     # 행동을 멈추고 제어코드에 로봇의 정확한 위치를 요구 함
+from darknetb.msg import kudos_vision_head_pub as kvhp               # 제어코드한테 머리의 각도 정보를 알려주는 코드    
+from darknetb.msg import kudos_vision_op3_local_mode as kvolm        # 제어코드로부터 고개를 돌려서 로컬라이제이션 모드로 들어가라고 전달 받는 메세지. 
+from PyQt5.QtWidgets import QApplication                             # GUI를 띄우기 위한 파이큐티5를 import
+import bh_function.image_filter as MY_IMAGE_FILTER                   # 사용 안함
+import bh_function.local_process_gui as bh_GUI                       # local_process_gui를 import ( local_process_gui는 라인을 검출하는 gui )
+import numpy as np                                                   # 넘파이 import (numpy는 파이썬에서 행렬 모듈)
+import sys    # sys는 경로를 추가해주고 더해주는 모듈
+### 밑의 line 4개는 따로 설치하는 openCV를 사용하기 위한 코드 // 경로 추가해줄때 ros/ kinetic인지 noetic인지 버전 구분해줄 것. (20.04 18.04 16.04 각기 다름)
 try:
-    sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
+    sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')          # ROS에서 주어지는 파이썬 패키지는 안쓰니까 경로를 지워줌.
 except Exception as e:
     pass
-import cv2
-from numpy.core.numeric import empty_like
-import random
-from PIL import Image
-from tqdm import tqdm
-import math
-import time
-from multiprocessing import Process, Queue
-import multiprocessing as mp
+
+
+import cv2           # openCV import
+from numpy.core.numeric import empty_like  # 넘파이에서 빈 행렬 만드는 모듈
+import random                                     # 랜덤 모듈
+from PIL import Image                          # 이미지 저장, 관리해주는 라이브러리 (몇몇기능은 openCV보다 나음)
+from tqdm import tqdm                            # 반복문을 그래프로 시각화해줌
+import math                                    # 수학 계산 라이브러리 
+import time                                   #  sleep 같은 기능 쓰기 위한 time 라이브러리 
+from multiprocessing import Process, Queue        # 코드들을 따로 돌아가게 해야돼서 import 해줌.
+import multiprocessing as mp                    # 코드들을 따로 돌아가게 해야돼서 import 해줌.
 
 save_picture_path = "./자료/"
 
