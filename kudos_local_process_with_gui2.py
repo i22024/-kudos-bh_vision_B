@@ -76,7 +76,7 @@ robot_desire_tilt = 45
 #경기장의 hsv범위
 field_minimum_condition = np.array([20, 230, 20])
 field_maximum_condition = np.array([40, 250, 40])
-
+addw
 #경기장 컨투어 팽창 침식 강도 (경기장 공백공간의 노이즈 제거)
 field_contour_dilate_p = 20
 field_contour_erode_p = 20
@@ -86,12 +86,13 @@ op3_local_mode = False       #정확한 위치를 알아야 될때 True로 바�
 start_point_x = 0
 start_point_y = 0
 start_point_orien = 0
-start_point_xy_distribution = 0                  #확률 분포의 시작 범위
-start_point_orien_distribution = 0               #
-start_point_diff_limit_wslow_wfast = 1.0         # 실제로 로봇이 보고있는 line과 추정된 방향으로 보는 로봇의 시야에서의 line의 괴리감.
-mcl2_particle_num = 100
+start_point_xy_distribution = 0                  #확률 분포의 시작 범위 :파티클 회전 분산
+start_point_orien_distribution = 0               #확률 분포의 시작 범위 : 파티클 회전 분산
+start_point_diff_limit_wslow_wfast = 1.0         # 실제로 로봇이 보고있는 line과 추정된 방향으로 보는 로봇의 시야에서의 line의 차이. : 모드 변경 제한 변수 
+mcl2_particle_num = 100                          # 흩뿌릴 추정 모델의 횟수
+#위의 변수들은 상당히 어려운 개념이므로 몬테카를로 알고리즘의 이해가 필요
 
-#gui와 데이터를 공유할 파라미터 메시지의 폼 형성
+#gui와 데이터를 공유할 파라미터 메시지의 폼 형성 ( 각 프로세스간  통신을 위한 Dictionory ) 
 gui_param_message_form = {
     "mask_minimum_condition": [0,0,0],
     "mask_maximum_condition": [0,0,0],
