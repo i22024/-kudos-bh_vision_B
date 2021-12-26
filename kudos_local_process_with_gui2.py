@@ -137,22 +137,24 @@ gui_param_image_form = {
 class priROS():
     def __init__(self):
         pass
-
+   
+    # talker는 몬테 카를로 로컬라이제이션 알고리즘에 좌표들을 보내는 함수
     def talker(self, message_form):
         pub = rospy.Publisher('kudos_vision_local_sensor_data', kvlsd, queue_size=1)
         message = kvlsd()
-        message.debug_num = message_form['debug_num']
-        message.sensor_data_x = message_form['sensor_data_x']
-        message.sensor_data_y = message_form['sensor_data_y']
-        message.op3_local_mode = message_form['op3_local_mode']
-        message.xy_distribution = message_form["xy_distribution"]
-        message.orien_distribution = message_form["orien_distribution"]
-        message.diff_limit_wslow_wfast = message_form["diff_limit_wslow_wfast"]
-        message.start_point_x = message_form['start_point_x']
-        message.start_point_y = message_form['start_point_y']
-        message.start_point_orien = message_form['start_point_orien']
-        pub.publish(message)
-
+        message.debug_num = message_form['debug_num']                #메세지가 잘 받아지는지 아닌지에 대한 테스트를 위한 용도
+        message.sensor_data_x = message_form['sensor_data_x']        # 검출된 라인 좌표들의 x값만 모아 sensor_data_x에 담아둔다.
+        message.sensor_data_y = message_form['sensor_data_y']        # 검출된 라인 좌표들의 y값만 모아 sensor_data_y에 담아둔다.
+        message.op3_local_mode = message_form['op3_local_mode']      # 로컬라이제이션 모드로 들어간다는 것을 몬테카를로 알고리즘에 알리기 위한 메세지
+        message.xy_distribution = message_form["xy_distribution"]    # xy에 대한 분산 정보를 mcl에 전달해야 위치 추정 파티클(mcl에서 파란색 추정 입자들)이 얼마나 분포할지 결정할 수 있음.
+        message.orien_distribution = message_form["orien_distribution"] # 파란색 파티클 분산들이 각도를 얼마나 할지 mcl에 보내줘야 파티클들이 각도를 얼마나 왔다갔다 할 지 결정 가능.
+        message.diff_limit_wslow_wfast = message_form["diff_limit_wslow_wfast"] #모드 변경 제한 변수 / 모드 변경 제한 변수를 넘어갈정도로 도저히 위치를 못찾겠다 싶으면 푸른 파티클이 경기장 전체에 쫙 퍼져서 위치를 찾음. 
+        message.start_point_x = message_form['start_point_x'] # 로봇이 파티클이 퍼져나가면서 위치를 추정할때 어디 점을 중심으로 퍼저나갈 것인지에 대한 x좌표를 오도메트리에서 받은 x를 씀.
+        message.start_point_y = message_form['start_point_y'] # 그러므로 y좌표도 마찬가지로 오도메트리에서 받은 y좌표를 출발점으로 스타팅 포인트 결정.
+        message.start_point_orien = message_form['start_point_orien'] # 오도메트리로 받은 각도가 스타팅 포인트에 작용.
+        pub.publish(message) # mcl에 전송.
+   
+    # mcl에 보내는 머리의 각도
     def talker_head(self, desire_tilt, point_count):
         pub = rospy.Publisher('kudos_vision_head_pub', kvhp, queue_size=1)
         message = kvhp()
@@ -501,13 +503,14 @@ def when_receive_op3_local_msg(ros_data, args):
 
 
 if __name__=='__main__':
-    priROS = priROS()
+    priROS = priROS() #위의 클래스 초기화
     useful_function = useful_function()
     q = Queue(1)
     paramq = Queue(1)
     p = Process(name="producer", target=run_gui, args=(q, paramq, gui_param_message_form, gui_param_image_form), daemon=True)
     p.start()
-    rospy.init_node('kudos_vision_local_process', anonymous = False)
-    rospy.Subscriber("/output/image_raw/compressed", CompressedImage, when_receive_yolo_image,(priROS, useful_function, q, paramq), queue_size=1)
-    rospy.Subscriber("kudos_vision_op3_local_mode", kvolm, when_receive_op3_local_msg,(priROS, ), queue_size=1)
+    rospy.init_node('kudos_vision_local_process', anonymous = False)                          #노드 초기화
+    rospy.Subscriber("/output/image_raw/compressed", CompressedImage, when_receive_yolo_image,(priROS, useful_function, q, paramq), queue_size=1) # 이미지를 받는 subscriber
+    rospy.Subscriber("kudos_vision_op3_local_mode", kvolm, when_receive_op3_local_msg,(priROS, ), queue_size=1)        # op3 메세지를 받는 subscriber 
+    # 각각 메세지를 받을 때, 각각 when_receive_yolo_image,(priROS, useful_function, q, paramq)  when_receive_op3_local_msg,(priROS, )를 실행. 인자는 괄호 안의 인자들이 들어감.
     rospy.spin()
