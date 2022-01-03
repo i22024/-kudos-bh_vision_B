@@ -66,8 +66,8 @@ guassian_filter_size = 1
 
 # 스카이 아이뷰 형 변환을 위한 사이즈 설정
 empty_size_mul = 5      #로봇이 거의 바닥을 보고 있다면 empty_size_mul을 작게 잡고 반대라면 크게 잡을 것.
-cp_size_left_loc = 2
-cp_size_right_loc = 3
+cp_size_left_loc = 2    
+cp_size_right_loc = 3          # right_loc - left_loc은 이미지 상대적 비율
 
 #로봇 고개 각도 설정 (시뮬레이터 속에서는 의미없고 로봇 연결했을때 의미있음)
 robot_desire_tilt = 45
@@ -158,52 +158,54 @@ class priROS():
     def talker_head(self, desire_tilt, point_count):
         pub = rospy.Publisher('kudos_vision_head_pub', kvhp, queue_size=1)
         message = kvhp()
-        desire_tilt = desire_tilt*math.pi/180
-        desire_tilt = -desire_tilt
-        desire_pan = 0
-        message.pan = desire_pan
+        desire_tilt = desire_tilt*math.pi/180  # 라디안 값으로 변환
+        desire_tilt = -desire_tilt             # 고개를 숙여야 함으로 -부호 붙여줌.
+        desire_pan = 0                         # 머리의 수평은 항상 정면이므로 0
+        message.pan = desire_pan             
         message.tilt = desire_tilt
-        message.point_count = point_count
-        pub.publish(message)
+        message.point_count = point_count     # gui에 잡히는 좌표들 개수 ( .... 이면 4개 이런식으로 점들의 좌표개수 카운트. 잡히는 개수 없으면 되돌아야됨.)
+        pub.publish(message)  
 
+# 유용한 함수들 모음.
 class useful_function():
     def __init__(self):
         self.pts = np.zeros((4, 2), dtype=np.float32)
         self.pts1 = 0
         self.pts2 = 0
-
+      
     def get_distance_from_two_points(self, point1, point2):
         # 포인트의 형식은 리스트[x좌표, y좌표]
-        distance = math.sqrt(((point1[0] - point2[0]) ** 2) + ((point1[1] - point2[1]) ** 2))
+        distance = math.sqrt(((point1[0] - point2[0]) ** 2) + ((point1[1] - point2[1]) ** 2)) # 두 점사이의 거리를 피타고라스 법칙을 이용해 구해줌.
         return distance
 
     def save_numpy_file(self, append_name, img):
-        im = Image.fromarray(img.astype('uint8'), 'RGB')
+        im = Image.fromarray(img.astype('uint8'), 'RGB') #이미지를 행렬로써 다루고 그 중 원하는 이미지를 jpg로 저장할 수있음.
         im.save(save_picture_path + append_name + '.jpg')
-
-    def perspective(self, top_view_npArr, pre_processing_size):
-        img_shape = np.shape(top_view_npArr)
-        view_npArr = top_view_npArr.copy()
-        top_view_npArr = np.zeros((img_shape[0], int(img_shape[1]*empty_size_mul), 3), dtype=np.uint8)
-        top_view_npArr[: ,int(img_shape[1]*cp_size_left_loc):int(img_shape[1]*cp_size_left_loc)+np.shape(view_npArr)[1], :] = view_npArr
+    
+    #하늘에서 본 스카이 뷰로 변환해주는 함수    ///  top_view_npArr은 kudos_vision 시뮬레이터의 오른쪽 위 (로봇이 보는 시야) 이미지를 의미. 
+    def perspective(self, top_view_npArr, pre_processing_size):          # pre_processing_size : 변환할 이미지 사이즈 ( 원본 - > pre_processing_size )
+        img_shape = np.shape(top_view_npArr)  # np.shape로 이미지의 사이즈를 알아내서 img_shape에 저장
+        view_npArr = top_view_npArr.copy()    # view_npArr에 top_view_npArr을 복사하여 저장. (백업)
+        top_view_npArr = np.zeros((img_shape[0], int(img_shape[1]*empty_size_mul), 3), dtype=np.uint8) # top_view_npArr에 hsv값이 0으로 채워진 이미지로 바꾸겠다. np.zeros(높이,가로,채널)
+        top_view_npArr[: ,int(img_shape[1]*cp_size_left_loc):int(img_shape[1]*cp_size_left_loc)+np.shape(view_npArr)[1], :] = view_npArr # 0으로만 채워진 top_view_npArr에 압축 과정을 진행함.
         topLeft = [int(img_shape[0]*cp_size_left_loc),0]
         bottomRight = [int(img_shape[0]*empty_size_mul), img_shape[0]]
         topRight = [int(img_shape[0]*cp_size_right_loc),0]
         bottomLeft = [0, img_shape[0]]
-        self.pts1 = np.float32([topLeft, topRight, bottomRight, bottomLeft])
+        self.pts1 = np.float32([topLeft, topRight, bottomRight, bottomLeft]) # 함수를 float 32형으로 변환. int -> float 32  // pts1은 사다리꼴 좌표
         w1 = abs(bottomRight[0] - bottomLeft[0])
         w2 = abs(topRight[0] - topLeft[0])
         h1 = abs(topRight[1] - bottomRight[1])
         h2 = abs(topLeft[1] - bottomLeft[1])
         width = max([w1, w2])  # 두 좌우 거리간의 최대값이 서류의 폭
         height = max([h1, h2])  # 두 상하 거리간의 최대값이 서류의 높이
-        self.pts2 = np.float32([[0, 0], [width - 1, 0], [width - 1, height - 1], [0, height - 1]])
-        mtrx = cv2.getPerspectiveTransform(self.pts1, self.pts2)
-        result = cv2.warpPerspective(top_view_npArr, mtrx, (int(width), int(height)))
-        result = cv2.resize(result, dsize=(pre_processing_size, pre_processing_size), interpolation=cv2.INTER_AREA)
-        result = np.swapaxes(result, 0, 1)
-        result = np.flip(result)
-        result = cv2.GaussianBlur(result, (guassian_filter_size*2+1,guassian_filter_size*2+1), 0)
+        self.pts2 = np.float32([[0, 0], [width - 1, 0], [width - 1, height - 1], [0, height - 1]])       # pts2는 직사각형 좌표
+        mtrx = cv2.getPerspectiveTransform(self.pts1, self.pts2) # 탑뷰로 변환
+        result = cv2.warpPerspective(top_view_npArr, mtrx, (int(width), int(height))) # warp로 직사각형 이미지를 mtrx라는 정보를 가지고 변환시켜줌,
+        result = cv2.resize(result, dsize=(pre_processing_size, pre_processing_size), interpolation=cv2.INTER_AREA) # pre_processing_size로 리사이즈
+        result = np.swapaxes(result, 0, 1) # x축과 y축을 바꿔 90도를 회전시켜줌 
+        result = np.flip(result) # flip을 넣어 반대로 돌아간 이미지 조정
+        result = cv2.GaussianBlur(result, (guassian_filter_size*2+1,guassian_filter_size*2+1), 0) # 이미지를 부드럽게 만들어주는 '블러'를 씌운다.
 
         return result
     
@@ -503,8 +505,8 @@ def when_receive_op3_local_msg(ros_data, args):
 
 
 if __name__=='__main__':
-    priROS = priROS() #위의 클래스 초기화
-    useful_function = useful_function()
+    priROS = priROS() # 상단의 priROS 클래스 초기화
+    useful_function = useful_function() #유용한 함수들을 class로 묶은 것이 useful_function. 메인문에서 초기화.
     q = Queue(1)
     paramq = Queue(1)
     p = Process(name="producer", target=run_gui, args=(q, paramq, gui_param_message_form, gui_param_image_form), daemon=True)
