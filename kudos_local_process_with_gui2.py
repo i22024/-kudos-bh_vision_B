@@ -260,7 +260,8 @@ class useful_function():
         #gui_image_list.append(masked_hsv_top_view_npArr)
 
         return masked_hsv_top_view_npArr, gui_param_image
-    #
+    
+    # 검출된 좌표들의 위치를 반환하는 함수.
     def get_profit_point(self, optim_resize_masked_top_view_npArr, indexing_masked, standard_pixel_distance, standard_pixel_recommend_max_num, optim_resize_const):
         # optim_resize_masked_top_view_npArr는 masked_top_view_npArr를 optim_resize_const로 나눠서 사이즈 조정한 것.
         # indexing_masked는 optim_resize_masked_top_view_npArr에서 하얀색인 부분들의 좌표들.
@@ -274,17 +275,19 @@ class useful_function():
         
         # indexing_masked[0])에 해당 좌표들의 x, 해당 좌표들의 y가 담기게 된다.
         for index in range(len(indexing_masked[0])):           # 검출된 좌표들의 개수만큼 반복문을 돌린다.
-            tmp_point = [indexing_masked[0][index], indexing_masked[1][index]]        # 첫번째 좌표를 tmp_point에 저장 한다. (반복문을 돌릴때마다 임의의 좌표를 tmp_point에 담을 것임.)
+            tmp_point = [indexing_masked[0][index], indexing_masked[1][index]]        # 일단 첫번째 좌표를 tmp_point에 저장 한다. (반복문을 돌릴때마다 임의의 좌표를 tmp_point에 담을 것임.)
             if len(point_list) == 0:            # 만약 point_list에 담긴 좌표가 없다면,
                 point_list.append(tmp_point)    # 첫번째 좌표 tmp_point를 point_list에 추가해준다.
             else:                               # 반대로 point_list에 좌표가 담겨 있다면,
                 min_distance = 999              # 일단 최소 거리를 999로 설정한다.
-                for point in point_list:
-                     distance = self.get_distance_from_two_points(point, tmp_point)
-                     if min_distance>distance:
-                         min_distance = distance
-                if min_distance > standard_pixel_distance:
-                    point_list.append(tmp_point)
+                for point in point_list:                                           # point_list안에 들은 point들에 대하여:
+                     distance = self.get_distance_from_two_points(point, tmp_point)   # 임시 좌표 tmp_point와 반복문에서 돌아가는 point와의 거리를 distance에 저장한다.
+                     if min_distance>distance:                                        # 만약 최소 거리 min_distance가 위에서 잰 거리보다 크다면:
+                         min_distance = distance                                        # min_distance를 distance로 갱신.
+                if min_distance > standard_pixel_distance:                         # 만약 min_distance가 standard_pixel_distance보다 크다면:
+                    point_list.append(tmp_point)                                        # tmp_point를 point_list에 추가한다.         
+                # 따라서 위 반복문 코드의 내용은 point_list에 들은 좌표들과 tmp_point의 최소 거리를 구하여 최소 거리 min_distance가 우리가 설정한 거리 standard_pixel_distance 보다 클 때 point_list에 추가해주는 원리이다.     
+                # 결국 일정 거리 이상 떨어진 좌표만 point_list에 추가해주는 코드이다.   
             # 만약 검출된 좌표점의 개수가 standard_pixel_recommend_max_num보다 많으면 break로 멈춤. 에러방지.
             if standard_pixel_recommend_max_num < len(point_list):
                 break
