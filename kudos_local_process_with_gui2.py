@@ -206,40 +206,51 @@ class useful_function():
         result = np.swapaxes(result, 0, 1) # x축과 y축을 바꿔 90도를 회전시켜줌 
         result = np.flip(result) # flip을 넣어 반대로 돌아간 이미지 조정
         result = cv2.GaussianBlur(result, (guassian_filter_size*2+1,guassian_filter_size*2+1), 0) # 이미지를 부드럽게 만들어주는 '블러'를 씌운다.
-
         return result
     
+    # sky view 컬러 화면에서 필드는 검은색, line은 흰색으로 변환시키는 함수 ( gui에서 1번째 화면 - > 2번째 화면 )
+    # 원리 HSV 최소~ 최대 범위 사이에 있다면 흰색으로 만들고, 그 범위 바깥에 있다면 검은색으로 칠해버린다.
     def Image_mask(self, top_view_npArr, contour_img, mask_minimum_condition, mask_maximum_condition, roi_size, dilate_power, erode_power, gui_param_image):
-        hsv_top_view_npArr = cv2.cvtColor(top_view_npArr, cv2.COLOR_BGR2HSV)
-        gui_param_image["hsv_img"] = hsv_top_view_npArr
+        hsv_top_view_npArr = cv2.cvtColor(top_view_npArr, cv2.COLOR_BGR2HSV) # top_view_npArr을 hsv로 변환.
+        # Image_mask의 매개변수 top_view_npArr : gui 1번쨰 화면 // contour_img : hsv 범위를 조정하여 gui 아래쪽 흑백 반전한 화면에서 팽창과 침식을 이용해 line을 지우고 경기장만 잡은 이미지. gui 하단 마지막 이미지.
+        # mask_minimum_condition, mask_maximum_condition : HSV 최소, 최대 범위를 저장하는 리스트 
+        # roi_size는 자를 이미지의 사이즈. 딕셔너리 형이며 gui에 설정된 값으로 덮어씌워짐. // dilate_power, erode_power는 각각 팽창, 침식 강도이다. 팽창: 하얀색 영역이 팽창. 침식은 그 반대.
+        # gui_param_image는 이미지를 저장하고 GUI에 쏘아주는 변수. gui_param_image_form에 리스트가 저장되어 있음.
+        gui_param_image["hsv_img"] = hsv_top_view_npArr  # gui_param_image는 gui에게 이미지 파라미터들을 묶어보내는 택배박스. gui_param_image의 "hsv_img"변수에  hsv_top_view_npArr 대입.
         #gui_image_list.append(hsv_top_view_npArr)
         '''
-        h2, s2, v2 = cv2.split(hsv_top_view_npArr)
+        h2, s2, v2 = cv2.split(hsv_top_view_npArr) # 3차원 채널의 이미지를 채널별로 분류해 h2 s2 v2에 2차원으로 저장.
+        # imshow는 이미지를 보여주는 것. hsv 변환이 잘 됐는지 확인하는 코드.
         cv2.imshow('h', h2) # 색상 범위는 (0~180), 하얀색에서는 채도가 제대로 결정되지 않음
         cv2.imshow('s', s2) # 채도 범위는 원색의 강렬함 정도, 0~255사이의 값으로 표현된다. 하얀색에서는 원색의 강렬함 정도가 낮게 표현된
         cv2.imshow('v', v2) # 명도는 색의 밝고 어두운 정도를 표현한다. 0~255사이의 값으로 표현된다. 시뮬상에서는 하얀색과 초록색이 구분되지 않는다.
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         '''
-        # 지정한 범위로 마스크를 씌워 하얀색 영역만 검출해낸다.
-        masked_hsv_top_view_npArr = cv2.inRange(hsv_top_view_npArr, mask_minimum_condition, mask_maximum_condition)
-        gui_param_image["bin_line_img"] = masked_hsv_top_view_npArr
+        #inRange를 이용하여 hsv_top_view_npArr의  mask_minimum_condition ~ mask_maximum_condition 사이에 있는, 즉 하얀색 영역만 검출하고, 나머지는 다 검은색으로 처리하여
+        # 변수 masked_hsv_top_view_npArr에 저장한다. 이 이미지는 gui에서 상단 2번째 흑백 이미지다. 
+        masked_hsv_top_view_npArr = cv2.inRange(hsv_top_view_npArr, mask_minimum_condition, mask_maximum_condition)      
+        gui_param_image["bin_line_img"] = masked_hsv_top_view_npArr # 변수  masked_hsv_top_view_npArr의 이미지를 gui_param_image의 bin_line_img에 저장한다.
+        #현재 masked_hsv_top_view_npArr에는 이진 이미지(상단 2번째 흑백이미지)가 저장되어있다.
         #gui_image_list.append(masked_hsv_top_view_npArr)
 
         #위치 검출기의 범위를 벗어나서 검출되는 선이 발생하지 않도록 ROI를 설정한다.
         masked_hsv_top_view_npArr = masked_hsv_top_view_npArr[:,roi_size["pre_x"]:roi_size["pre_x"]+roi_size["x_size"]]
-        gui_param_image["resize_img"] = masked_hsv_top_view_npArr
+        gui_param_image["resize_img"] = masked_hsv_top_view_npArr 
+        #여기서 resize_img는 gui에서 3번째 화면으로써, 기존 2번째 gui 화면인 masked_hsv_top_view_npArr를 pre_x지점부터 pre_x+x_size 지점까지 잘라 gui_param_image의 resize_img변수에 저장한다.
         #gui_image_list.append(masked_hsv_top_view_npArr)
 
         ###
         #To Do
-        #여기에 필드와 라인과의 교집합을 설정한다.
-        mask_img = np.empty_like(masked_hsv_top_view_npArr)
-        mask_img[:,:] = 0
+        #여기에 필드와 라인과의 교집합을 설정한다. 즉 gui의 3번째 이미지인 masked_hsv_top_view_npArr(=resize_img)와 contour_img의 교집합이
+        # gui의 4번째 화면인 mask_img가 된다.
+        mask_img = np.empty_like(masked_hsv_top_view_npArr) # masked_hsv_top_view_npArr와 같은 모양과 크기인데, hsv값이 전부 0으로 채워진 이미지가  mask_img에 저장된다.
+        mask_img[:,:] = 0 # 위 코드에 의해  mask_img에 시스템에 따라 0이 채워질수도, num이 채워질수도 있는데 그냥 편의를 위해 0을 채움.
         mask_img[contour_img>0] = masked_hsv_top_view_npArr[contour_img>0]
         masked_hsv_top_view_npArr = mask_img
         ###
-
+        
+        # 팽창 침식 알고리즘. 팽창과 침식을 하려면 getStructuringElement 함수를 써야한다.
         # 팽창을 이용하여 라인사이에 존재하는 노이즈를 없애고 침식을 이용해 라인을 얇게 형성한다.
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (dilate_power, dilate_power))
         masked_hsv_top_view_npArr = cv2.dilate(masked_hsv_top_view_npArr, kernel)
@@ -249,30 +260,42 @@ class useful_function():
         #gui_image_list.append(masked_hsv_top_view_npArr)
 
         return masked_hsv_top_view_npArr, gui_param_image
-    
+    #
     def get_profit_point(self, optim_resize_masked_top_view_npArr, indexing_masked, standard_pixel_distance, standard_pixel_recommend_max_num, optim_resize_const):
-        standard_pixel_distance /= optim_resize_const
-        circle_img = np.zeros_like(optim_resize_masked_top_view_npArr, np.uint8)
-        point_list = []
-        for index in range(len(indexing_masked[0])):
-            tmp_point = [indexing_masked[0][index], indexing_masked[1][index]]
-            if len(point_list) == 0:
-                point_list.append(tmp_point)
-            else:
-                min_distance = 999
+        # optim_resize_masked_top_view_npArr는 masked_top_view_npArr를 optim_resize_const로 나눠서 사이즈 조정한 것.
+        # indexing_masked는 optim_resize_masked_top_view_npArr에서 하얀색인 부분들의 좌표들.
+        #  standard_pixel_recommend_max_num은 화면이 어둡다가 확~ 밝아지면 그 순간 모든 지점을 좌표로 인식해서 연산하기 때문에 느려지고 연산이 밀리게 되고 코드가 멈추는 치명적인 에러가 발생한다.
+        # 따라서 그 연산하는 좌표점의 개수를 제한하는  standard_pixel_recommend_max_num 변수를 통해 에러 통제.
+        # optim_resize_const를 통해 리사이즈를 하면 추출하는 좌표 개수를 줄일 수 있기 때문에 연산이 빨라진다. 그리고 줄어든 좌표점 연산을 다시 복원하기 위해 존재하는 변수다.
+        
+        standard_pixel_distance /= optim_resize_const #이미지가 리사이즈 된 만큼, 좌표점들의 거리도 리사이즈 시켜주는 과정.
+        circle_img = np.zeros_like(optim_resize_masked_top_view_npArr, np.uint8) #optim_resize_masked_top_view_npArr와 같은 크기면서 0으로 채워진 이미지를 변수 circle_img에 저장. 
+        point_list = [] # 검사된 좌표들을 담을 빈 리스트 변수 point_list.
+        
+        # indexing_masked[0])에 해당 좌표들의 x, 해당 좌표들의 y가 담기게 된다.
+        for index in range(len(indexing_masked[0])):           # 검출된 좌표들의 개수만큼 반복문을 돌린다.
+            tmp_point = [indexing_masked[0][index], indexing_masked[1][index]]        # 첫번째 좌표를 tmp_point에 저장 한다. (반복문을 돌릴때마다 임의의 좌표를 tmp_point에 담을 것임.)
+            if len(point_list) == 0:            # 만약 point_list에 담긴 좌표가 없다면,
+                point_list.append(tmp_point)    # 첫번째 좌표 tmp_point를 point_list에 추가해준다.
+            else:                               # 반대로 point_list에 좌표가 담겨 있다면,
+                min_distance = 999              # 일단 최소 거리를 999로 설정한다.
                 for point in point_list:
                      distance = self.get_distance_from_two_points(point, tmp_point)
                      if min_distance>distance:
                          min_distance = distance
                 if min_distance > standard_pixel_distance:
                     point_list.append(tmp_point)
+            # 만약 검출된 좌표점의 개수가 standard_pixel_recommend_max_num보다 많으면 break로 멈춤. 에러방지.
             if standard_pixel_recommend_max_num < len(point_list):
                 break
 
         for index, point in enumerate(point_list):
+            # 리사이즈된 좌표들을 원본 이미지 크기에 맞게 다시 복원.
             point[0] *= optim_resize_const
             point[1] *= optim_resize_const
+            # 좌표 리스트에 복원된 좌표들을 추가.
             point_list[index] = point 
+        #아래는 주석이므로 사용안함.
         '''
         total_point_list = []
         for point in final_point_list:
@@ -286,32 +309,38 @@ class useful_function():
                 total_point_list.append(point)
             point_list.append(point)
         '''
-        return point_list
-
+        return point_list   # 좌표 리스트들을 반환.
+    # field_image_mask는 gui의 1번째 화면에서 아랫줄 1->2->3 화면으로 가는 과정
     def field_image_mask(self, top_view_npArr, field_minimum_condition, field_maximum_condition, roi_size, field_contour_dilate_p, field_contour_erode_p, gui_param_image):
-        top_view_npArr = cv2.cvtColor(top_view_npArr, cv2.COLOR_BGR2HSV)
-        contour_img = np.empty_like(top_view_npArr)
-        contour_img[:,:,:] = np.array([0,0,0])
-        contour_img = cv2.inRange(top_view_npArr, field_minimum_condition, field_maximum_condition)
-        gui_param_image["bin_field_img"] = contour_img
+    # field_image_mask의 매개변수는 gui의 첫번째 화면인 top_view_npArr과, 필드 최소, 최대범위인 field_minimum_condition, field_maximum_condition 그리고
+    # 필드 팽창 및 침식강도인 field_contour_dilate_p, field_contour_erode_p 마지막으로 gui와 통신할때 전송하는 매개변수 리스트인 gui_param_image.
+    
+        top_view_npArr = cv2.cvtColor(top_view_npArr, cv2.COLOR_BGR2HSV) # HSV 변환
+        contour_img = cv2.inRange(top_view_npArr, field_minimum_condition, field_maximum_condition) # inRange를 이용하여 top_view_npArr에서 필드 최소~최대 범위 사이의 값만 contour_img에 이진 이미지로써 저장한다. 
+        gui_param_image["bin_field_img"] = contour_img # gui_param_image의 bin_field_img에 contour_img 저장. ( 이 때 bin_field_img는 gui 하단 첫번째 이미지 )
 
-        contours, _ = cv2.findContours(contour_img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-        contour_img[:,:] = np.array(0)
+        contours, _ = cv2.findContours(contour_img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE) # gui 화면 내에서 폐곡선을 찾아주는 모듈 findContours
+        contour_img[:,:] = np.array(0)  #  contour_img를 0으로 채워 초기화 ( 윗줄에서 contours에 저장해서 이제 딱히 쓸모 없어져서 다시 초기화 해준 것.)
         for contour in contours:
-            cv2.drawContours(contour_img, [contour],0, (255, 255, 255),3)
-        cv2.fillPoly(contour_img, pts=contours, color=(255,255,255))
-        contour_img = contour_img[:, roi_size["pre_x"]:roi_size["pre_x"]+roi_size["x_size"]]
-        gui_param_image["resize_field_img"] = contour_img
-
+            cv2.drawContours(contour_img, [contour],0, (255, 255, 255),3) # drawContours 모듈을 이용하여 경기장 화면에 폐곡선의 경계선을 하얀색으로 그려준다.
+        cv2.fillPoly(contour_img, pts=contours, color=(255,255,255))      # fillPoly 모듈을 이용하여 폐곡선 빈 곳들을 하얀색으로 칠해준다. 
+        # 결국 검은색 도화지에 폐곡선들의 경계선을 하얀색으로 그려주고 그 내부를 하얀색으로 채우면 남은 검은색 부분이 자연스럽게 경기장의 line이 되는 것. 
+        contour_img = contour_img[:, roi_size["pre_x"]:roi_size["pre_x"]+roi_size["x_size"]] # 컨투어 이미지에 ROI 처리를 해준다.
+        gui_param_image["resize_field_img"] = contour_img # gui_param_image의 resize_field_img에 컨투어 이미지를 저장한다.
+        
+        # 마지막으로 gui 하단의 마지막 화면을 만들기 위해 팽창과 침식을 이용한다.
+        # 먼저 하얀색 면적의 팽창강도를 높게 설정하여 line을 모두 지우고, 넓어진 하얀색 면적을 다시 원래대로 검은색으로 채우기 위해 침식 강도도 그에 못지 않은 크기로 설정하는 원리.
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (field_contour_dilate_p, field_contour_dilate_p))
         contour_img = cv2.dilate(contour_img, kernel)
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (field_contour_erode_p, field_contour_erode_p))
         contour_img = cv2.erode(contour_img, kernel)
-        gui_param_image["erode_dilate_field"] = contour_img
+        gui_param_image["erode_dilate_field"] = contour_img  # gui_param_image의 erode_dilate_field에 contour_img 저장.
 
         return contour_img, gui_param_image
-
+# gui 실행 함수.
 def run_gui(q, paramq, gui_param_message_form, gui_param_image_form):
+#  gui_param_message_form는 gui에서 이 코드로 보내는 자료들. gui_param_image_form는 이 코드에서 gui로 보내는 자료들. paramq는 자료구조에서 큐를 의미.
+#  밑의 자료는 gui를 화면에 띄우기 위해 Pyqt를 이용한 내용임.
     app = QApplication(sys.argv)
     mywindow = bh_GUI.App(q, paramq, gui_param_message_form, gui_param_image_form)
     mywindow.show()
@@ -397,18 +426,22 @@ def when_receive_yolo_image(ros_data, args):
     contour_img, gui_param_image = useful_function.field_image_mask(top_view_npArr, field_minimum_condition, field_maximum_condition, roi_size, field_contour_dilate_p, field_contour_erode_p, gui_param_image)
     masked_top_view_npArr, gui_param_image = useful_function.Image_mask(top_view_npArr, contour_img, mask_minimum_condition, mask_maximum_condition, roi_size, dilate_power, erode_power, gui_param_image)
     
+    # masked_top_view_npArr의 요소들(0,1)을 optim_resize_const로 나눠준다. 예로 450을 3으로 나눠주면 150으로 리사이즈.
     optim_resize_masked_top_view_npArr = cv2.resize(masked_top_view_npArr, 
                                                     dsize = (round(np.shape(masked_top_view_npArr)[1]/optim_resize_const), round(np.shape(masked_top_view_npArr)[0]/optim_resize_const)),
-                                                    interpolation=cv2.INTER_AREA)
-    indexing_masked = np.where(optim_resize_masked_top_view_npArr>254)
+                                                    interpolation=cv2.INTER_AREA)    
+    # dsize는 사이즈 정의 / round는 float을 int로 바꿔주는 것. / INTER_AREA는 리사이즈 방법인데, 이미지 사이즈 조정할때 최적화된 방식이다.
+    indexing_masked = np.where(optim_resize_masked_top_view_npArr>254) # optim_resize_masked_top_view_npArr에서 하얀색인 부분들의 좌표들을 찾아 indexing_masked에 저장한다.
 
     point_list = []
-
+    # standard_pixel_distance는 라인에서 좌표점을 추출할 때, 점과 점사이의 거리를 조정하는 것. 즉 standard_pixel_distance와 추출되는 좌표점의 개수는 반비례한다.
+    # standard_pixel_max_distance와standard_pixel_min_distance는 gui에서 가변 거리 필터 설정의 최대, 최소 거리를 의미하며, 두 변수를 조정하여 추출되는 좌표점의 개수를 22~23개로 제한하는 원리.
+    # standard_pixel_distance_unit는 검사 감소 거리로써 좌표점의 개수를 한번에 얼마만큼 조정할 것인지에 대한 변수이다. ( ex: 27->25->23 )
     if standard_pixel_max_distance >= standard_pixel_min_distance:
         if standard_pixel_distance > standard_pixel_max_distance:
-            standard_pixel_distance = standard_pixel_max_distance
+            standard_pixel_distance = standard_pixel_max_distance # standard_pixel_distance가 너무 커지면 그 크기를 줄이고, 
         elif standard_pixel_distance < standard_pixel_min_distance:
-            standard_pixel_distance = standard_pixel_min_distance
+            standard_pixel_distance = standard_pixel_min_distance # standard_pixel_distance가 너무 작아지면 그 크기를 늘리는 원리.
         point_list = useful_function.get_profit_point(optim_resize_masked_top_view_npArr, indexing_masked, standard_pixel_distance, standard_pixel_recommend_max_num, optim_resize_const)
         if len(point_list)  < standard_pixel_recommend_min_num:
             standard_pixel_distance -= standard_pixel_distance_unit
