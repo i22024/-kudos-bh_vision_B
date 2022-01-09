@@ -344,18 +344,21 @@ class useful_function():
 def run_gui(q, paramq, gui_param_message_form, gui_param_image_form):
 #  gui_param_message_form는 gui에서 이 코드로 보내는 자료들. gui_param_image_form는 이 코드에서 gui로 보내는 자료들. paramq는 자료구조에서 큐를 의미.
 #  밑의 자료는 gui를 화면에 띄우기 위해 Pyqt를 이용한 내용임.
-    app = QApplication(sys.argv)
+    app = QApplication(sys.argv)   # gui 창을 띄우기 위한 모듈 QApplication
     mywindow = bh_GUI.App(q, paramq, gui_param_message_form, gui_param_image_form)
     mywindow.show()
     app.exec_()
 
+# YOLO에서 이미지를 받았을 때, when_receive_yolo_image 함수가 작동. 
 def when_receive_yolo_image(ros_data, args):
     #start = time.time()
-    #파라미터 초기화
+    # args라는 list 파라미터들을 통해 초기화
     priROS = args[0]
     useful_function = args[1]
     q = args[2]
     paramq = args[3]
+    
+    # 변수를 주고 받기 위해 전역변수로 설정
     # hsv범위
     global mask_minimum_condition
     global mask_maximum_condition
@@ -398,18 +401,21 @@ def when_receive_yolo_image(ros_data, args):
     global start_point_orien_distribution
     global start_point_diff_limit_wslow_wfast
     global mcl2_particle_num
-
+    
+    # 몬테카를로 알고리즘에 보낼 변수들.
     mcl_message = {"debug_num":1,
-                    "sensor_data_x":[],
-                    "sensor_data_y":[],
-                    "op3_local_mode": False,
-                    "xy_distribution":0,
-                    "orien_distribution":0,
-                    "diff_limit_wslow_wfast":0,
-                    "start_point_x":0,
-                    "start_point_y":0,
-                    "start_point_orien":0}
-    gui_param_image = gui_param_image_form
+                    "sensor_data_x":[],      # mcl에서 인식된 좌표들의 x값들
+                    "sensor_data_y":[],      # mcl에서 인식된 좌표들의 y값들
+                    "op3_local_mode": False,  # op3한테 받은 내용을 mcl에 전송하는 변수
+                    "xy_distribution":0,          # 추정된 좌표에서 얼마만큼 분산할 것인가?
+                    "orien_distribution":0,        # 추정된 좌표에서 얼마만큼 회전하여 분산할 것인가?
+                    "diff_limit_wslow_wfast":0,     # line과 검출된 좌표간의 괴리감에 비례하여 커지는 변수. xy_distribution과 곱해지므로써 점점 더 분산됨.
+                    "start_point_x":0,           # 분산 전 시작 좌표 x
+                    "start_point_y":0,           # 분산 전 시작 좌표 y
+                    "start_point_orien":0}       # 분산 전 시작 각도 orien
+    
+    # gui_param_image는 gui에 보낼 이미지의 변수들을 받아서 초기화 해준다.
+    gui_param_image = gui_param_image_form         
     gui_param_image["yolo_processed_img"] = 0
     gui_param_image["hsv_img"] = 0
     gui_param_image["bin_line_img"] = 0
@@ -421,15 +427,18 @@ def when_receive_yolo_image(ros_data, args):
     gui_param_image["distance_line"] = 0
     gui_param_image["num_of_line_point"] = 0
 
-    # 여기부턴 이미지 변환
-    np_arr = np.fromstring(ros_data.data, np.uint8)
+    # 여기부턴 이미지 변환 ( 압축된 이미지를 Uncompressed 해줌)
+    np_arr = np.fromstring(ros_data.data, np.uint8) 
     view_npArr = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-    top_view_npArr = useful_function.perspective(view_npArr, pre_processing_size)
-    gui_param_image["yolo_processed_img"] = top_view_npArr
+    
+    top_view_npArr = useful_function.perspective(view_npArr, pre_processing_size)  # 로봇의 시야로 받아온 view_npArr을 perspective로 변환하여 top_view_npArr에 저장.
+    gui_param_image["yolo_processed_img"] = top_view_npArr   # gui_param_image의 yolo_processed_img에 top_view_npArr저장.
+    
+    # 팽창과 침식을 통해 image_mask 함수들에서 폐곡선을 받아와서 각각 contour_img에 하단의 필드 영역 gui 받아서 저장  // masked_top_view_npArr에 상단의 경기장+라인 이진 이미지 받아서 저장. 
     contour_img, gui_param_image = useful_function.field_image_mask(top_view_npArr, field_minimum_condition, field_maximum_condition, roi_size, field_contour_dilate_p, field_contour_erode_p, gui_param_image)
     masked_top_view_npArr, gui_param_image = useful_function.Image_mask(top_view_npArr, contour_img, mask_minimum_condition, mask_maximum_condition, roi_size, dilate_power, erode_power, gui_param_image)
     
-    # masked_top_view_npArr의 요소들(0,1)을 optim_resize_const로 나눠준다. 예로 450을 3으로 나눠주면 150으로 리사이즈.
+    # masked_top_view_npArr의 요소들(0,1)을 optim_resize_const로 나눠준다. 예로 450을 3으로 나눠주면 150으로 리사이즈. (연산 부담을 줄여줌)
     optim_resize_masked_top_view_npArr = cv2.resize(masked_top_view_npArr, 
                                                     dsize = (round(np.shape(masked_top_view_npArr)[1]/optim_resize_const), round(np.shape(masked_top_view_npArr)[0]/optim_resize_const)),
                                                     interpolation=cv2.INTER_AREA)    
@@ -445,52 +454,62 @@ def when_receive_yolo_image(ros_data, args):
             standard_pixel_distance = standard_pixel_max_distance # standard_pixel_distance가 너무 커지면 그 크기를 줄이고, 
         elif standard_pixel_distance < standard_pixel_min_distance:
             standard_pixel_distance = standard_pixel_min_distance # standard_pixel_distance가 너무 작아지면 그 크기를 늘리는 원리.
+            
+         # 좌표들을 받아와서 point_list에 저장.
         point_list = useful_function.get_profit_point(optim_resize_masked_top_view_npArr, indexing_masked, standard_pixel_distance, standard_pixel_recommend_max_num, optim_resize_const)
-        if len(point_list)  < standard_pixel_recommend_min_num:
-            standard_pixel_distance -= standard_pixel_distance_unit
-        elif len(point_list) > standard_pixel_recommend_max_num:
-            standard_pixel_distance += standard_pixel_distance_unit
+        if len(point_list)  < standard_pixel_recommend_min_num:      # recommend_min_num 보단 커야하며
+            standard_pixel_distance -= standard_pixel_distance_unit    # 좌표간의 거리 조절
+        elif len(point_list) > standard_pixel_recommend_max_num:     # recommend_max_num 보단 작아야한다.
+            standard_pixel_distance += standard_pixel_distance_unit    # 좌표간의 거리 조절
+   
+    gui_param_image["num_of_line_point"] = len(point_list) # num_of_line_point에 검출된 좌표의 개수를 저장.
     
-    gui_param_image["num_of_line_point"] = len(point_list)
-    circle_img = np.zeros_like(masked_top_view_npArr, np.uint8)
+    circle_img = np.zeros_like(masked_top_view_npArr, np.uint8)  # 검출된 좌표들에 동그라미를 그려주기 위한 검은색 빈 이미지
+    # 검출된 좌표들의 위치에 openCV를 이용해 좌표들에 동그라미를 그려준다
     for point in point_list:
         cv2.circle(circle_img, (point[1], point[0]), 5, 255)
-    gui_param_image["distance_line"] = circle_img
+    gui_param_image["distance_line"] = circle_img  # distance_line 변수에 검출된 모든 좌표들을 표시한 circle_img 저장.
+    # 너무 많은 좌표들이 검출되지 않기 위한 안전장치.
     if len(point_list) < standard_pixel_limit_num:
         for point in point_list:
-            mcl_message["sensor_data_y"].append(point[0]-(pre_processing_size//2))
-            mcl_message["sensor_data_x"].append(point[1]+roi_push_move)
+            mcl_message["sensor_data_y"].append(point[0]-(pre_processing_size//2))  # 검출된 y 좌표들을 보낼 메세지 변수 sensor_data_y
+            mcl_message["sensor_data_x"].append(point[1]+roi_push_move)             # 검출된 x 좌표들을 보낼 메세지 변수 sensor_data_x
         for i in range(standard_pixel_limit_num-len(point_list)):
-            mcl_message["sensor_data_x"].append(-100)
-            mcl_message["sensor_data_y"].append(-100)
-        mcl_message["op3_local_mode"] = op3_local_mode
+            mcl_message["sensor_data_x"].append(-100)             # 여유 공간이 남으면 좌표값은 -100으로 채워짐.
+            mcl_message["sensor_data_y"].append(-100)             # 여유 공간이 남으면 좌표값은 -100으로 채워짐.  mcl에 가면 -100은 처리가 안됨.
+        # op3에게 받은 정보를 그대로 저장하는 것. 시작점, 분산 정도, 각도 , 괴리감 , 로컬모드.    
+        mcl_message["op3_local_mode"] = op3_local_mode          
         mcl_message["start_point_x"] = start_point_x
         mcl_message["start_point_y"] = start_point_y
         mcl_message["start_point_orien"] = start_point_orien
         mcl_message["xy_distribution"] = start_point_xy_distribution
         mcl_message["orien_distribution"] = start_point_orien_distribution
         mcl_message["diff_limit_wslow_wfast"] = start_point_diff_limit_wslow_wfast
-
+        # 검출 좌표 개수는 전송해야되는 최소 개수 standard_pixel_send_min_num 보다 커야되고 standard_pixel_send_max_num 보다 작아야함( 큰 의미없음.) 
+        # 마지막으로 op3_local_mode가 True 라는 것은, 로봇이 걸음을 멈추고 고개를 내려 localization할 준비를 마쳤다는 것을 의미.
         if len(point_list) > standard_pixel_send_min_num and len(point_list) < standard_pixel_send_max_num and op3_local_mode is True:
-            if standard_pixel_send_wait_count < standard_pixel_im_ready_count:
-                mcl_message["op3_local_mode"] = op3_local_mode
-                priROS.talker(mcl_message)
+            if standard_pixel_send_wait_count < standard_pixel_im_ready_count:        # op3가 멈추고 고개를 내릴만큼의 시간을 기다리는 것.
+                mcl_message["op3_local_mode"] = op3_local_mode # mcl에 보낼 변수이므로 mcl 메세지 속에 잘 저장해준다.
+                priROS.talker(mcl_message)                     # priROS와 talker를 이용해 mcl_message를 전송.
             else:
-                standard_pixel_im_ready_count += 1
-        elif op3_local_mode is False:
-            standard_pixel_im_ready_count = 0
+                standard_pixel_im_ready_count += 1  # 시간내에 위의 조건들을 모두 만족시켜, count가 부족하면 count를 증가시킴.
+        elif op3_local_mode is False:               # op3_local_mode가 False가 되어 로봇이 움직이기 시작했을 떈
+            standard_pixel_im_ready_count = 0      #  기다리면 안되므로 count값을 0으로 만들어줌.
 
-    priROS.talker_head(robot_desire_tilt, len(point_list))
-
+    priROS.talker_head(robot_desire_tilt, len(point_list))  # 로봇한테 이 tilt 값으로 고개를 조정해라는 명령과, 그리고 감지된 좌표 개수를 말해줌.
+    #허공을 보고있을 경우 op3에게 알려 op3가 localization 결과를 기다리지 않고 다시 움직이게 만들기 위함.
+    
     # 큐에 그냥 put을 하면 데드락이 걸리기 때문에, put_nowait를 써서 gui가 별개로 돌아가게 만든다
     gui_param_image["op3_local_mode"] = op3_local_mode
+   
     try:
-        q.put_nowait(gui_param_image)
-    except Exception as e:
+        q.put_nowait(gui_param_image)  # q가 차있을 경우 put을 넣으면 q가 될때까지 기다려서 렉이 걸리기 때문에 기다리지 않기 위한 방지용 코드.
+    except Exception as e:             # q가 차있으면 안넣고, q가 비어있으면 넣는 방식
         pass
-
+    
+    #gui에서 사람이 입력한 정보들을 받아오기 위한 코드
     try:
-        param_dic = paramq.get_nowait()
+        param_dic = paramq.get_nowait()  # paramq가  비어있더라도 찰때까지 기다리지 않기 위한 코드.
         mask_minimum_condition = param_dic["mask_minimum_condition"]
         mask_maximum_condition = param_dic["mask_maximum_condition"]
         pre_processing_size = param_dic["pre_processing_size"]
@@ -517,7 +536,7 @@ def when_receive_yolo_image(ros_data, args):
         start_point_xy_distribution = param_dic["start_point_xy_distribution"]
         start_point_orien_distribution = param_dic["start_point_orien_distribution"]
         start_point_diff_limit_wslow_wfast = param_dic["start_point_diff_limit_wslow_wfast"]
-        
+        # gui에서 얻어온 정보를 numpy 형태로 바꿔줘야 하므로 하단 4줄에서 형태를 바꿔줌.
         mask_minimum_condition = np.array(mask_minimum_condition)
         mask_maximum_condition = np.array(mask_maximum_condition)
         field_minimum_condition = np.array(field_minimum_condition)
@@ -530,6 +549,7 @@ def when_receive_yolo_image(ros_data, args):
 
 def when_receive_op3_local_msg(ros_data, args):
     priROS = args[0]
+    # op3로 부터 얻은 정보들을 다시 넣어주는 과정.
     global op3_local_mode
     global start_point_x
     global start_point_y
@@ -541,12 +561,14 @@ def when_receive_op3_local_msg(ros_data, args):
 
 
 if __name__=='__main__':
-    priROS = priROS() # 상단의 priROS 클래스 초기화
+    priROS = priROS() # ROS에서 쓰는 함수들을 모아놓은 priROS 클래스 초기화
     useful_function = useful_function() #유용한 함수들을 class로 묶은 것이 useful_function. 메인문에서 초기화.
-    q = Queue(1)
-    paramq = Queue(1)
+    q = Queue(1)                   # queue 자료구조 변수 q
+    paramq = Queue(1)              # queue 자료구조 변수 paramq
+    # p는 서브process로써 파이썬에서 별도로 생성한 것. args에 4개의 매개변수는 q, paramq 그리고 gui와 주고받을 메세지이다. daemon=True는 main process가 죽으면 같이 죽는 프로세스.
+    # Process의 이름은 producer 이며, 프로세스에서 실행되는 함수는 run_gui이다.
     p = Process(name="producer", target=run_gui, args=(q, paramq, gui_param_message_form, gui_param_image_form), daemon=True)
-    p.start()
+    p.start() # 프로세스 시작.
     rospy.init_node('kudos_vision_local_process', anonymous = False)                          #노드 초기화
     rospy.Subscriber("/output/image_raw/compressed", CompressedImage, when_receive_yolo_image,(priROS, useful_function, q, paramq), queue_size=1) # 이미지를 받는 subscriber
     rospy.Subscriber("kudos_vision_op3_local_mode", kvolm, when_receive_op3_local_msg,(priROS, ), queue_size=1)        # op3 메세지를 받는 subscriber 
