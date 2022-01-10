@@ -22,6 +22,7 @@ os.environ['MPLCONFIGDIR'] = os.getcwd() + "/configs/"
 import matplotlib.pyplot as plt
 
 class App(QWidget):
+    # gui를 호출하면 제일먼저 init이 호출되어 self 인자들을 선언하여 만들어줌.
     def __init__(self, dataQueue, parameterQueue, gui_param_message_form, gui_param_image_form):
         super().__init__()
         self.img_size = 195
@@ -32,15 +33,18 @@ class App(QWidget):
         self.gui_param_message = gui_param_message_form
         self.gui_param_imgage = gui_param_image_form
         self.initUI()
-
-    def initUI(self):
-        self.setWindowTitle('라인 검출 GUI')
-        self.center() 
-        self.resize(1000, 1000)
-        label_min_HSV = QLabel('HSV 최소 범위', self)
+    
+    # gui 띄우는 함수
+    def initUI(self):   # 인자들을 self로 받은 이유는, 
+        self.setWindowTitle('라인 검출 GUI') # gui 제목
+        self.center()                       # gui가 중앙에 뜸.
+        self.resize(1000, 1000)             # gui 창의 크기를 1000,1000으로 제한.
+        # QLabel을 통해 내부에 라벨을 붙일 수 있음.
+        label_min_HSV = QLabel('HSV 최소 범위', self)   
         label_min_HSV.move(20, 20)
         miniLabel = QLabel('H', self)
         miniLabel.move(10, 45)
+        # QLineEdit은 대입 가능한 박스.
         self.min_H = QLineEdit(self)
         self.min_H.move(25, 45)
         miniLabel = QLabel('S', self)
@@ -220,7 +224,7 @@ class App(QWidget):
         self.label_num_of_line_point.move(600, 40)
         self.num_of_line_point = QLabel("00",self)
         self.num_of_line_point.move(710, 40)
-
+        # 이미지를 넣을 빈 박스들 생성.
         self.img_0_label = QLabel(self)
         self.img_0_label.setGeometry(0, 600, self.img_size, self.img_size)
         self.img_1_label = QLabel(self)
@@ -239,8 +243,8 @@ class App(QWidget):
         self.img_7_label.setGeometry(400, 800, self.img_size, self.img_size)
         
 
-
-        self.btn_load_data_and_set = QPushButton('데이터 로드 및 적용', self)
+        # 함수랑 연결된 버튼을 만들어줌. 버튼 누를시 해당 함수 실행.
+        self.btn_load_data_and_set = QPushButton('데이터 로드 및 적용', self)  
         self.btn_load_data_and_set.move(200, 50)
         self.btn_load_data_and_set.clicked.connect(self.load_data_func)
         self.btn_save_data_and_set = QPushButton('데이터 세이브 및 적용', self)
@@ -255,14 +259,16 @@ class App(QWidget):
         self.btn_debuging_img = QPushButton('이미지 디버깅', self)
         self.btn_debuging_img.move(200,250)
         self.btn_debuging_img.clicked.connect(self.debug_img)
-
+       
+        # 상단의 코드들이 반복되게 해놓음.
         self.timer = QTimer(self)
         self.timer.start(0)
         self.timer.timeout.connect(lambda: self.timeout_run())
-
+     
+    #위의 타이머 코드가 끝나게 되면 실행하는 함수.
     def timeout_run(self):
         if self.IS_GUI_SYNC:
-            gui_param_image = self.dataQueue.get()
+            gui_param_image = self.dataQueue.get()   # self.dataQueue에 있는 data들을 가져온다. 그 data들은 q의 data와 같음.
             try:
                 pixmap_img0 =  self.convert_nparray_to_Qpixmap(gui_param_image["yolo_processed_img"])
                 self.img_0_label.setPixmap(pixmap_img0)
@@ -288,12 +294,14 @@ class App(QWidget):
                 elif gui_param_image["op3_local_mode"] == True:
                     self.label_op3_local_mode.setText("op3_local_mode: True")
                 detect_point_str = str(gui_param_image["num_of_line_point"])
-                self.num_of_line_point.setText(detect_point_str)
+                self.num_of_line_point.setText(detect_point_str)     # setText를 이용해 검출된 좌표 개수를 gui에 실시간 업데이트
 
             except Exception as e:
                 print("Error!", e, "by_bh")
-
+            
+            # 사람이 gui에 적어놓은 변수들을 int형으로 변환하여 local_process_gui2에 보낸다.
             try:
+                # minipack은 리스트의 내용들을 변수 하나에 묶어준 것.
                 minipack = [int(self.min_H.text()),int(self.min_S.text()),int(self.min_V.text())]
                 self.gui_param_message["mask_minimum_condition"] = minipack
                 minipack = [int(self.max_H.text()),int(self.max_S.text()),int(self.max_V.text())]
@@ -326,15 +334,17 @@ class App(QWidget):
                 self.gui_param_message["start_point_orien_distribution"] = float(self.start_point_orien_distribution.text())
                 self.gui_param_message["start_point_diff_limit_wslow_wfast"] = float(self.start_point_diff_limit_wslow_wfast.text())
 
-
+               # 최종적으로 완성된 gui_param_message를 parameterQueue에 넣어준다.
                 self.parameterQueue.put_nowait(self.gui_param_message)
             except Exception as e:
                 print(e)
-        
+     
+    # 이미지 디버깅 버튼 ( 누르면 이미지 나옴.)
     def debug_img(self):
         plt.imshow(self.hsv_img)
         plt.show()
-
+    
+    # 데이터 로드 및 적용 ( gui에 있는 버튼을 누르면 saved_configuration.txt에 들은 내용을 gui에 적용시킴. )
     def load_data_func(self):
         f = open("./bh_function/bh_data/saved_configuration.txt", 'r')
         data_list = f.readlines()
@@ -386,8 +396,10 @@ class App(QWidget):
             pass
         QMessageBox.about(self, "message", "데이터 로드와 적용!")
     
+    # gui에 적힌 data들을 저장하는 '데이터 저장' 버튼
     def save_data_func(self):
-        f = open('./bh_function/bh_data/saved_configuration.txt', 'w')
+        f = open('./bh_function/bh_data/saved_configuration.txt', 'w')  # ./bh_function/bh_data/saved_configuration.txt 파일을 연다.
+        # minipack에 gui에 적힌 데이터들을 추가한다.
         minipack = []
         minipack.append(self.min_H.text())
         minipack.append(self.min_S.text())
@@ -425,24 +437,27 @@ class App(QWidget):
         minipack.append(self.standard_pixel_send_max_num.text())
         minipack.append(self.standard_pixel_send_wait_count.text())
         for index, data in enumerate(minipack):
+            # gui 박스 안에서 엔터키를 눌러서 에러가 나는것을 방지하는 코드.
             try:
                 data = data.replace("\n","")
                 data = data+"\n"
                 minipack[index] = data
             except Exception as e:
                 pass
-        f.writelines(minipack)
-        f.close()
-        QMessageBox.about(self, "message", "데이터 저장!")
-
+        f.writelines(minipack)     # 열었던  ./bh_function/bh_data/saved_configuration.txt 파일에 gui의 내용들이 담긴 minipack을 저장.
+        f.close()                     
+        QMessageBox.about(self, "message", "데이터 저장!")         
+     
+    # gui 동기화 버튼  ( 업데이트 재개)
     def sync_video_func(self):
         self.IS_GUI_SYNC = True
         QMessageBox.about(self, "message", "gui 싱크 활성화")
-    
+    # gui 비동기화 버튼 ( 업데이트 정지 , 너무 렉이 심하거나 느릴때 멈추는 용도 )
     def un_sync_video_func(self):
         self.IS_GUI_SYNC = False
         QMessageBox.about(self, "message", "gui 싱크 비활성화")
-
+        
+    # 이미지를 넣어주기 위해 Qpixmap으로 변환하는 함수.
     def convert_nparray_to_Qpixmap(self, img):
         try:
             if img.ndim == 2:
@@ -459,7 +474,8 @@ class App(QWidget):
         except Exception as e:
             print(e,"_bhbh")
             return e
-
+    
+    # gui를 가운데에 띄우는 함수 ( 바꿀 일 없음 )
     def center(self):
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
