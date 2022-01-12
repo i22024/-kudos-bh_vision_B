@@ -1,3 +1,4 @@
+#통신 코드
 from __future__ import unicode_literals, print_function
 import socket
 import time
@@ -108,17 +109,17 @@ class GameStateReceiver(object):
     def set_manual_penalty(self, flag):
         self.man_penalize = flag
 
-
+## 이부분만 좀 신경써서 조정해주면 된다.
 class SampleGameStateReceiver(GameStateReceiver):
     def talker(self, message_form):
         pub = rospy.Publisher('kudos_vision_gcm', kudos_vision_gcm, queue_size=1)
-        rospy.init_node('kudos_vision_Game_controller_processor', anonymous = False)
-        message = kudos_vision_gcm()
-        message.main_game_state = message_form['main_game_state']
+        rospy.init_node('kudos_vision_Game_controller_processor', anonymous = False)  # 노드 선언 코드이므로 함수 밖으로 빼주는게 좋음
+        message = kudos_vision_gcm()                              # kudos_vision_gcm을 불러와서
+        message.main_game_state = message_form['main_game_state'] # main_game_state를 넣어주고
         rospy.loginfo(message)
-        pub.publish(message)
+        pub.publish(message)                                      # publish 해준다.
 
-    def on_new_gamestate(self, state):
+    def on_new_gamestate(self, state):                   # 게임 컨트롤러와 통신하여 상태를 받음 
         message_form = {
             'main_game_state':-1}
         print(state.game_state)
